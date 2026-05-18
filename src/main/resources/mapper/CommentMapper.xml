@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.edu.model.mapper.CommentMapper">
+
+	<select id="selectByBoardId" parameterType="int" resultType="com.ssafy.edu.model.dto.CommentDto">
+		SELECT
+			comment_id,
+			board_id,
+			writer,
+			content,
+			writedate
+		FROM comment
+		WHERE board_id = #{boardId}
+		ORDER BY comment_id ASC
+	</select>
+	
+	<insert id="insert" parameterType="com.ssafy.edu.model.dto.CommentDto">
+		INSERT INTO comment(
+			board_id,
+			writer,
+			content
+		)
+		VALUES(
+			#{boardId},
+			#{writer},
+			#{content}
+		)
+	</insert>
+	
+	<delete id="delete" parameterType="int">
+		DELETE from comment
+		WHERE comment_id = #{commentId}
+	</delete>
+    
+
+</mapper>
+

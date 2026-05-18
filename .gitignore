@@ -1,0 +1,36 @@
+# build result
+target/
+build/
+out/
+
+# Maven wrapper jar
+.mvn/wrapper/maven-wrapper.jar
+
+# STS / Eclipse
+.apt_generated/
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache/
+
+# IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# logs
+*.log
+
+# local config / secrets
+src/main/resources/application-local.properties
+.env
