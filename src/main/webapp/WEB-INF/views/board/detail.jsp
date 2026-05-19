@@ -1,92 +1,94 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>게시글 상</title>
+<title>게시글 상세</title>
 </head>
 <body>
 	<%@ include file="../include/header.jsp" %>
 	
-	<h1>게시글 상세</h1>
-	
-	<table border="1">
-		<tr>
-			<th>번호</th>
-			<th>${board.id }</th>
-		</tr>
-		<tr>
-			<th>작성자</th>
-			<th>${board.writer }</th>
-		</tr>
-		<tr>
-			<th>제목</th>
-			<th>${board.title }</th>
-		</tr>
-		<tr>
-			<th>내용</th>
-			<th>${board.guecontents }</th>
-		</tr>
-		<tr>
-			<th>작성일</th>
-			<th>${board.writedate }</th>
-		</tr>
-	</table>
-	
-	<br>
-	
-	<a href="/board/list">목록</a>
-	
-	<hr>
-	
-	<c:if test="${not empty user and user.writer eq board.writer }">
-		<a href="/board/detail/update?id=${board.id }">수정</a>
-		<form action="/board/detail/delete" method="post" style="display:inline;">
-			<input type="hidden" name="id" value="${board.id }">
-			<button type="submit">삭제</button>
-		</form>
-	</c:if>
-	
-	<hr>
+	<main class="container">
+		<h1 class="page-title">게시글 상세</h1>
+		<p class="page-desc">게시글 내용과 댓글을 확인할 수 있어요.</p>
 
-<h2>댓글</h2>
+		<section class="card">
+			<div class="detail-grid">
+				<div class="detail-row">
+					<div class="detail-label">번호</div>
+					<div class="detail-value">${board.id }</div>
+				</div>
 
-<c:if test="${not empty user}">
+				<div class="detail-row">
+					<div class="detail-label">작성자</div>
+					<div class="detail-value">${board.writer }</div>
+				</div>
 
-    <form action="/board/detail/write" method="post">
+				<div class="detail-row">
+					<div class="detail-label">제목</div>
+					<div class="detail-value">${board.title }</div>
+				</div>
 
-        <input type="hidden" name="boardId" value="${board.id}">
+				<div class="detail-row">
+					<div class="detail-label">내용</div>
+					<div class="detail-value">${board.guecontents }</div>
+				</div>
 
-        <textarea name="content" rows="3" cols="50"></textarea>
+				<div class="detail-row">
+					<div class="detail-label">작성일</div>
+					<div class="detail-value">${board.writedate }</div>
+				</div>
+			</div>
+			
+			<div class="action-row">
+				<a href="${root }/board/list" class="btn btn-secondary">목록</a>
+				
+				<c:if test="${not empty user and user.writer eq board.writer }">
+					<a href="${root }/board/detail/update?id=${board.id }" class="btn btn-primary">수정</a>
 
-        <button type="submit">댓글 등록</button>
+					<form action="${root }/board/detail/delete" method="post" style="display:inline;">
+						<input type="hidden" name="id" value="${board.id }">
+						<button type="submit" class="btn btn-danger">삭제</button>
+					</form>
+				</c:if>
+			</div>
+		</section>
 
-    </form>
+		<section class="card comment-box">
+			<h2 class="page-title" style="font-size:24px;">댓글</h2>
 
-</c:if>
+			<c:if test="${not empty user}">
+			    <form action="${root }/board/detail/write" method="post">
+			        <input type="hidden" name="boardId" value="${board.id}">
 
-<c:if test="${empty user}">
+					<div class="form-group">
+			        	<textarea name="content" class="form-control" placeholder="댓글을 입력하세요"></textarea>
+					</div>
 
-    <p>댓글을 작성하려면 로그인하세요.</p>
+			        <button type="submit" class="btn btn-primary">댓글 등록</button>
+			    </form>
+			</c:if>
 
-</c:if>
+			<c:if test="${empty user}">
+			    <p class="empty-text">댓글을 작성하려면 로그인하세요.</p>
+			</c:if>
 
-<hr>
+			<div>
+				<c:forEach var="comment" items="${comments }">
+				    <div class="comment-item">
+						<div class="comment-meta">
+					        <strong class="comment-writer">${comment.writer}</strong>
+					        <span class="comment-date">${comment.writedate}</span> 
+						</div>
 
-<c:forEach var="comment" items="${comments }">
-
-    <div style="border-bottom:1px solid #ccc; padding:10px;">
-
-        <strong>${comment.writer}</strong>
-
-        <span>${comment.writedate}</span> 
-
-        <p>${comment.content}</p>
-
-    </div>
-
-</c:forEach>
+				        <p>${comment.content}</p>
+				    </div>
+				</c:forEach>
+			</div>
+		</section>
+	</main>
 	
 </body>
 </html>
