@@ -602,3 +602,31 @@ textarea.form-control {
 		display: none;
 	}
 }
+
+.search-form {
+	display: grid;
+	grid-template-columns: 160px 1fr auto auto;
+	gap: 10px;
+	margin-bottom: 24px;
+	align-items: center;
+}
+
+.search-select {
+	min-width: 160px;
+}
+
+.search-input {
+	min-width: 240px;
+}
+
+@media (max-width: 720px) {
+	.search-form {
+		grid-template-columns: 1fr;
+	}
+
+	.search-select,
+	.search-input,
+	.search-form .btn {
+		width: 100%;
+	}
+}

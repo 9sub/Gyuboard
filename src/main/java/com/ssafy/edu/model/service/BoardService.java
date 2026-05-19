@@ -5,7 +5,7 @@ import java.util.List;
 import com.ssafy.edu.model.dto.BoardDto;
 
 public interface BoardService {
-	List<BoardDto> list();
+	List<BoardDto> list(String type, String keyword);
 	int write(BoardDto boardDto);
 	BoardDto detail(int id);
 	int update(BoardDto boardDto);

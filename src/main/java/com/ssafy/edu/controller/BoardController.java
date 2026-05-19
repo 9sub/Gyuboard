@@ -32,9 +32,14 @@ public class BoardController {
 	}
 	
 	@GetMapping("/board/list")
-	public String list(Model model) {
-		List<BoardDto> list = boardservice.list();
+	public String list(String type, String keyword, Model model, HttpSession session) {
+		if(session.getAttribute("user") == null)
+			return "redirect:/member/login";
+		
+		List<BoardDto> list = boardservice.list(type, keyword);
 		model.addAttribute("list",list);
+		model.addAttribute("type",type);
+		model.addAttribute("keyword",keyword);
 		return "board/list";
 	}
 	

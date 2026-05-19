@@ -8,6 +8,31 @@
     <select id="selectAll" resultType="com.ssafy.edu.model.dto.BoardDto">
         SELECT id, writer, title, guecontents, writedate
         FROM guestable
+        
+        <where>
+        	<if test="keyword != null and keyword != ''">
+        		<choose>
+        			<when test="type == 'title'">
+        				title LIKE CONCAT('%', #{keyword}, '%')
+        			</when>
+        			<when test="type == 'writer'">
+        				writer LIKE CONCAT('%', #{keyword}, '%')
+        			</when>
+        			<when test="type == 'content'">
+        				guecontents LIKE CONCAT('%', #{keyword}, '%')
+        			</when>
+        			
+        			<otherwise>
+        				title LIKE CONCAT('%', #{keyword}, '%')
+        				OR guecontents LIKE CONCAT('%', #{keyword}, '%')
+        			</otherwise>
+        			
+        		</choose>
+        	
+        	</if>
+        </where>
+        
+        ORDER BY id DESC
     </select>
     
     <insert id="insert" parameterType="com.ssafy.edu.model.dto.BoardDto">
