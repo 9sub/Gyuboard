@@ -75,6 +75,31 @@
 			</tbody>
 		</table>
 	</section>
+
+	<c:if test="${not empty pageDto}">
+		<div class="pagination">
+			<c:if test="${pageDto.prev}">
+				<a class="page-link"
+				   href="${root }/board/list?page=${pageDto.startPage - 1}&type=${type}&keyword=${keyword}">
+					이전
+				</a>
+			</c:if>
+
+			<c:forEach var="num" begin="${pageDto.startPage}" end="${pageDto.endPage}">
+				<a class="page-link ${pageDto.page == num ? 'active' : ''}"
+				   href="${root }/board/list?page=${num}&type=${type}&keyword=${keyword}">
+					${num}
+				</a>
+			</c:forEach>
+
+			<c:if test="${pageDto.next}">
+				<a class="page-link"
+				   href="${root }/board/list?page=${pageDto.endPage + 1}&type=${type}&keyword=${keyword}">
+					다음
+				</a>
+			</c:if>
+		</div>
+	</c:if>
 </main>
 
 </body>

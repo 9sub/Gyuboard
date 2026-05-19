@@ -31,8 +31,8 @@
         	
         	</if>
         </where>
-        
         ORDER BY id DESC
+        LIMIT #{size} OFFSET #{offset}
     </select>
     
     <insert id="insert" parameterType="com.ssafy.edu.model.dto.BoardDto">
@@ -71,6 +71,38 @@
     	DELETE FROM guestable
     	WHERE id = #{id}
     </delete>
+    
+    
+    <select id="count" resultType="int">
+    	SELECT COUNT(*)
+    	FROM guestable
+    	
+    	<where>
+    		<if test="keyword != null and keyword != ''">
+    			<choose>
+    				<when test="type == 'title'">
+        				title LIKE CONCAT('%', #{keyword}, '%')
+        			</when>
+        			<when test="type == 'writer'">
+        				writer LIKE CONCAT('%', #{keyword}, '%')
+        			</when>
+        			<when test="type == 'content'">
+        				guecontents LIKE CONCAT('%', #{keyword}, '%')
+        			</when>
+        			
+        			<otherwise>
+        				title LIKE CONCAT('%', #{keyword}, '%')
+        				OR guecontents LIKE CONCAT('%', #{keyword}, '%')
+        			</otherwise>
+    			</choose>
+    		</if>
+    	</where>
+    	
+    </select>
+    
+    
+    
+    
 
 </mapper>
 

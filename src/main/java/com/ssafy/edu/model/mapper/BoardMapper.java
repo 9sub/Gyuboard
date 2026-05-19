@@ -10,7 +10,10 @@ import com.ssafy.edu.model.dto.BoardDto;
 
 @Mapper
 public interface BoardMapper {
-	List<BoardDto> selectAll(@Param("type") String type,@Param("keyword") String keyword);
+	List<BoardDto> selectAll(@Param("type") String type, 
+			@Param("keyword") String keyword, 
+			@Param("offset")int offset, 
+			@Param("size") int size);
 
 	int insert(BoardDto boardDto);
 	
@@ -19,4 +22,6 @@ public interface BoardMapper {
 	int update(BoardDto boardDto);
 	
 	int delete(int id);
+
+	int count(@Param("type") String type,@Param("keyword") String keyword);
 }

@@ -6,11 +6,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ssafy.edu.model.dto.BoardDto;
 import com.ssafy.edu.model.dto.CommentDto;
 import com.ssafy.edu.model.dto.MemberDto;
+import com.ssafy.edu.model.dto.PageDto;
 import com.ssafy.edu.model.service.BoardService;
 import com.ssafy.edu.model.service.CommentService;
 
@@ -32,14 +34,25 @@ public class BoardController {
 	}
 	
 	@GetMapping("/board/list")
-	public String list(String type, String keyword, Model model, HttpSession session) {
+	public String list(String type, 
+			String keyword, 
+			@RequestParam(defaultValue = "1") int page,
+			Model model, 
+			HttpSession session) {
+		
 		if(session.getAttribute("user") == null)
 			return "redirect:/member/login";
 		
-		List<BoardDto> list = boardservice.list(type, keyword);
+		int size=10;
+		
+		int totalCount = boardservice.count(type, keyword);
+		PageDto pagedto = new PageDto(page, size, totalCount);
+		
+		List<BoardDto> list = boardservice.list(type, keyword, pagedto.getOffset(), pagedto.getSize());
 		model.addAttribute("list",list);
 		model.addAttribute("type",type);
 		model.addAttribute("keyword",keyword);
+		model.addAttribute("pageDto", pagedto);
 		return "board/list";
 	}
 	

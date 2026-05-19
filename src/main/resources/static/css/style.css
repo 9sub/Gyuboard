@@ -630,3 +630,40 @@ textarea.form-control {
 		width: 100%;
 	}
 }
+
+.pagination {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 8px;
+	margin-top: 28px;
+	flex-wrap: wrap;
+}
+
+.page-link {
+	min-width: 40px;
+	height: 40px;
+	padding: 0 13px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 14px;
+	background: rgba(255, 255, 255, 0.5);
+	border: 1px solid rgba(255, 255, 255, 0.76);
+	color: var(--primary-dark);
+	font-size: 14px;
+	font-weight: 900;
+	box-shadow: var(--shadow-soft);
+	transition: 0.2s ease;
+}
+
+.page-link:hover {
+	transform: translateY(-2px);
+	background: rgba(255, 255, 255, 0.72);
+}
+
+.page-link.active {
+	color: white;
+	background: var(--primary);
+	border-color: var(--primary);
+}

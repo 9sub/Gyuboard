@@ -16,8 +16,8 @@ public class BoardServiceImpl implements BoardService{
 	private final BoardMapper boardMapper;
 
 	@Override
-	public List<BoardDto> list(String type, String keyword){
-		return boardMapper.selectAll(type, keyword);
+	public List<BoardDto> list(String type, String keyword, int offset, int size){
+		return boardMapper.selectAll(type, keyword, offset, size);
 	}
 
 	@Override
@@ -43,6 +43,12 @@ public class BoardServiceImpl implements BoardService{
 	public int delete(int id) {
 		// TODO Auto-generated method stub
 		return boardMapper.delete(id);
+	}
+
+	@Override
+	public int count(String type, String keyword) {
+		
+		return boardMapper.count(type, keyword);
 	}
 
 }
