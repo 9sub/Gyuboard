@@ -5,32 +5,41 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>로그인 화면</title>
+<title>회원가입 화면</title>
 </head>
 <body>
 	
 	<%@include file="../include/header.jsp" %>
 	
-	<h1>로그인</h1>
+	<h1>회원가입</h1>
 	
 	<c:if test="${not empty msg }">
 		<p style="color:red;">${msg }</p>
 	</c:if>
 	
-	<form action="/member/login" method="post">
+	<form action="${root }/member/join" method="post">
 		<div>
 			<label>아이디</label>
-			<input type="text" name="writer">
+			<input type="text" name="writer" required>
 		</div>	
+
 		<div>
 			<label>비밀번호</label>
-			<input type="password" name="password">
+			<input type="password" name="password" required>
 		</div>	
+
+		<div>
+			<label>이름</label>
+			<input type="text" name="name" required>
+		</div>
+
+		<div>
+			<label>이메일</label>
+			<input type="email" name="email">
+		</div>
 		
-		<button type="submit">로그인</button>
+		<button type="submit">가입하기</button>
 	</form>
-	
-	<p>아직 회원이 아니신가요?<a href="${root }/member/join">회원가입</a></p>
 	
 </body>
 </html>

@@ -48,5 +48,33 @@ public class MemberController {
 		return "redirect:/";
 	}
 
+	@GetMapping("/member/join")
+	public String joinForm() {
+		return "member/join";
+	}
+	
+	@PostMapping("/member/join")
+	public String join(MemberDto memberdto, Model model) {
+		log.info("회원가입 요청: {}", memberdto);
+		
+		if(memberdto.getWriter() == null || memberdto.getWriter().isEmpty()
+				|| memberdto.getPassword() == null || memberdto.getPassword().isEmpty()
+				|| memberdto.getName() == null || memberdto.getPassword().isEmpty()) {
+			model.addAttribute("msg","아이디 비번 필수");
+			return "member/join";
+		}
+		
+		MemberDto user = memberservice.findByWriter(memberdto.getWriter());
+		
+		if(user != null) {
+			model.addAttribute("alert", "해당 유저가 이미 존재합니다.");
+			return "member/login";
+		}
+		
+		memberservice.joinMember(memberdto);
+		model.addAttribute("msg","회원가입 완료");
+		return "member/login";
+		
+	}
 	
 }

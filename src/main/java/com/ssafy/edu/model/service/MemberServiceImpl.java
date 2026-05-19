@@ -21,6 +21,18 @@ public class MemberServiceImpl implements MemberService{
 	public MemberDto login(MemberDto memberdto) {
 		return membermapper.login(memberdto);
 	}
+
+	@Override
+	public MemberDto findByWriter(String writer) {
+		// TODO Auto-generated method stub
+		return membermapper.selectByWriter(writer);
+	}
+
+	@Override
+	public int joinMember(MemberDto memberdto) {
+		// TODO Auto-generated method stub
+		return membermapper.joinMember(memberdto);
+	}
 	
 
 }

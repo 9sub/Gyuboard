@@ -17,6 +17,34 @@
     	WHERE password = #{password} and writer = #{writer}
     	
     </select>
+    
+    <select id="selectByWriter" parameterType="String" resultType="com.ssafy.edu.model.dto.MemberDto">
+    	SELECT
+    		writer,
+    		name,
+    		password,
+    		email,
+    		regidate
+    	FROM gueuser
+    	WHERE writer = #{writer}
+    </select>
+    
+    <insert id="joinMember" parameterType="com.ssafy.edu.model.dto.MemberDto">
+    	INSERT INTO gueuser(
+    		writer,
+    		name,
+    		password,
+    		email
+    	)
+    	VALUES(
+    		#{writer},
+    		#{name},
+    		#{password},
+    		#{email}
+    		
+    	)
+    	
+    </insert>
 
 </mapper>
 

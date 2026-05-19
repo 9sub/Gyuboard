@@ -7,4 +7,6 @@ import com.ssafy.edu.model.dto.MemberDto;
 
 public interface MemberService {
 	MemberDto login(MemberDto memberDto);
+	MemberDto findByWriter(String writer);
+	int joinMember(MemberDto memberdto);
 }
