@@ -40,6 +40,11 @@
 					<div class="detail-label">작성일</div>
 					<div class="detail-value">${board.writedate }</div>
 				</div>
+				
+				<div class="detail-row">
+					<div class="detail-label">조회수</div>
+					<div class="detail-value">${board.viewCount }</div>
+				</div>
 			</div>
 			
 			<div class="action-row">

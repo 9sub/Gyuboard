@@ -13,4 +13,5 @@ public class BoardDto {
 	private String title;
 	private String guecontents;
 	private LocalDateTime writedate;
+	private int viewCount;
 }

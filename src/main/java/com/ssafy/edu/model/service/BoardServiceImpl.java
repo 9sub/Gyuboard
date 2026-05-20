@@ -51,4 +51,11 @@ public class BoardServiceImpl implements BoardService{
 		return boardMapper.count(type, keyword);
 	}
 
+	@Override
+	public int updateViewCount(int id) {
+		// TODO Auto-generated method stub
+		return boardMapper.updateViewCount(id);
+	}
+	
+
 }

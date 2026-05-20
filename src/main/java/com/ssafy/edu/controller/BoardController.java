@@ -81,9 +81,13 @@ public class BoardController {
 
 	@GetMapping("/board/detail")
 	public String detail(int id, Model model) {
+		int cnt = boardservice.updateViewCount(id);
 		BoardDto board = boardservice.detail(id);
+		
+		model.addAttribute("viewCount", cnt);
 		model.addAttribute("board",board);
 		model.addAttribute("comments", commentservice.list(id));
+		
 		return "board/detail";
 	}
 	

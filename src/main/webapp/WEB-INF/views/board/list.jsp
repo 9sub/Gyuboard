@@ -45,6 +45,7 @@
 					<th>제목</th>
 					<th>내용</th>
 					<th>작성일</th>
+					<th>조회수</th>
 				</tr>
 			</thead>
 
@@ -68,6 +69,7 @@
 								</td>
 								<td class="board-content-preview">${board.guecontents }</td>
 								<td>${fn:substring(board.writedate,0,10) }</td>
+								<td>${board.viewCount }</td>
 							</tr>
 						</c:forEach>
 					</c:otherwise>

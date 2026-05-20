@@ -11,4 +11,5 @@ public interface BoardService {
 	int update(BoardDto boardDto);
 	int delete(int id);
 	int count(String type, String keyword);
+	int updateViewCount(int id);
 }

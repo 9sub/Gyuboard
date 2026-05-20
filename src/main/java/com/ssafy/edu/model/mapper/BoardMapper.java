@@ -24,4 +24,6 @@ public interface BoardMapper {
 	int delete(int id);
 
 	int count(@Param("type") String type,@Param("keyword") String keyword);
+
+	int updateViewCount(int id);
 }
