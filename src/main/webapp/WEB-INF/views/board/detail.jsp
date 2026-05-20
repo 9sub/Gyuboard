@@ -89,7 +89,6 @@
 					        <strong class="comment-writer">${comment.writer}</strong>
 					        <span class="comment-date">${fn:substring(board.writedate,0,10) } ${fn:substring(board.writedate,11,16) }</span> 
 						</div>
-
 				        <p>${comment.content}</p>
 				    </div>
 				</c:forEach>

@@ -6,25 +6,34 @@
 <mapper namespace="com.ssafy.edu.model.mapper.BoardMapper">
 
     <select id="selectAll" resultType="com.ssafy.edu.model.dto.BoardDto">
-        SELECT id, writer, title, guecontents, writedate, view_count as viewCount
-        FROM guestable
+        SELECT
+        	t.id,
+        	u.writer, 
+        	t.title, 
+        	t.guecontents, 
+        	t.writedate, 
+        	t.view_count as viewCount
+        FROM guestable as t
+        
+        JOIN gueuser u
+        ON t.user_id = u.user_id
         
         <where>
         	<if test="keyword != null and keyword != ''">
         		<choose>
         			<when test="type == 'title'">
-        				title LIKE CONCAT('%', #{keyword}, '%')
+        				t.title LIKE CONCAT('%', #{keyword}, '%')
         			</when>
         			<when test="type == 'writer'">
-        				writer LIKE CONCAT('%', #{keyword}, '%')
+        				u.writer LIKE CONCAT('%', #{keyword}, '%')
         			</when>
         			<when test="type == 'content'">
-        				guecontents LIKE CONCAT('%', #{keyword}, '%')
+        				t.guecontents LIKE CONCAT('%', #{keyword}, '%')
         			</when>
         			
         			<otherwise>
-        				title LIKE CONCAT('%', #{keyword}, '%')
-        				OR guecontents LIKE CONCAT('%', #{keyword}, '%')
+        				t.title LIKE CONCAT('%', #{keyword}, '%')
+        				OR t.guecontents LIKE CONCAT('%', #{keyword}, '%')
         			</otherwise>
         			
         		</choose>
@@ -34,14 +43,14 @@
         
         <choose>
         	<when test="sort == 'oldest'">
-        		ORDER BY writedate ASC
+        		ORDER BY t.writedate ASC
         	</when>
         	<when test="sort == 'view'">
-        		ORDER BY viewCount DESC
+        		ORDER BY t.viewCount DESC
         	</when>
         	
         	<otherwise>
-        		ORDER BY writedate DESC
+        		ORDER BY t.writedate DESC
         	</otherwise>
         </choose>
         
@@ -51,12 +60,12 @@
     
     <insert id="insert" parameterType="com.ssafy.edu.model.dto.BoardDto">
     	INSERT INTO guestable(
-    		writer,
+    		user_id,
     		title,
     		guecontents
     	)
     	VALUES(
-    		#{writer},
+    		#{userId},
     		#{title},
     		#{guecontents}
     	)
@@ -64,13 +73,15 @@
     
     <select id="selectOne" parameterType="int" resultType="com.ssafy.edu.model.dto.BoardDto">
     	SELECT
-    		id,
-    		writer,
-    		title,
-    		guecontents,
-    		writedate,
-    		view_count as viewCount
-    	FROM guestable
+    		t.id,
+    		u.writer,
+    		t.title,
+    		t.guecontents,
+    		t.writedate,
+    		t.view_count as viewCount
+    	FROM guestable as t
+    	JOIN gueuser as u
+    	ON t.user_id = u.user_id
     	WHERE id = #{id}
     </select>
     
@@ -90,24 +101,26 @@
     
     <select id="count" resultType="int">
     	SELECT COUNT(*)
-    	FROM guestable
+    	FROM guestable t
+    	JOIN gueuser u
+    	u.user_id = t.user_id
     	
     	<where>
     		<if test="keyword != null and keyword != ''">
     			<choose>
     				<when test="type == 'title'">
-        				title LIKE CONCAT('%', #{keyword}, '%')
+        				t.title LIKE CONCAT('%', #{keyword}, '%')
         			</when>
         			<when test="type == 'writer'">
-        				writer LIKE CONCAT('%', #{keyword}, '%')
+        				u.writer LIKE CONCAT('%', #{keyword}, '%')
         			</when>
         			<when test="type == 'content'">
-        				guecontents LIKE CONCAT('%', #{keyword}, '%')
+        				t.guecontents LIKE CONCAT('%', #{keyword}, '%')
         			</when>
         			
         			<otherwise>
-        				title LIKE CONCAT('%', #{keyword}, '%')
-        				OR guecontents LIKE CONCAT('%', #{keyword}, '%')
+        				t.title LIKE CONCAT('%', #{keyword}, '%')
+        				OR t.guecontents LIKE CONCAT('%', #{keyword}, '%')
         			</otherwise>
     			</choose>
     		</if>

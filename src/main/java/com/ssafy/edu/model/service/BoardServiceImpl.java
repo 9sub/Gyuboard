@@ -8,9 +8,11 @@ import com.ssafy.edu.model.dto.BoardDto;
 import com.ssafy.edu.model.mapper.BoardMapper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BoardServiceImpl implements BoardService{
 	
 	private final BoardMapper boardMapper;
@@ -23,7 +25,7 @@ public class BoardServiceImpl implements BoardService{
 	@Override
 	public int write(BoardDto boardDto) {
 		// TODO Auto-generated method stub
-		
+		log.info(boardDto.getUserId()+"****");
 		return boardMapper.insert(boardDto);
 	}
 

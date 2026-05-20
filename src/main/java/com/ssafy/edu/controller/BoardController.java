@@ -69,13 +69,13 @@ public class BoardController {
 	@PostMapping("/board/write")
 	public String write(BoardDto boardDto, HttpSession session) {
 		MemberDto user = (MemberDto) session.getAttribute("user");
-		log.info("글쓰기 요청 : {}",boardDto);
+		log.info("-------------글쓰기 요청 : {}",user.getUserId());
 		
 		if(session.getAttribute("user") == null) {
 			return "redirect:/member/login";
 		}
 		
-		boardDto.setWriter(user.getWriter());
+		boardDto.setUserId(user.getUserId());
 		
 		boardservice.write(boardDto);
 		return "redirect:/board/list";
@@ -102,7 +102,7 @@ public class BoardController {
 			return "redirect:/login";
 		}
 		
-		if(!board.getWriter().equals(loginUser.getWriter())) {
+		if(board.getUserId() != loginUser.getUserId()) {
 			return "redirect:/board/detail?id="+id;
 		}
 		
@@ -118,7 +118,7 @@ public class BoardController {
 		if(user == null) {
 			return "redirect:/member/login";
 		}
-		if(!origin.getWriter().equals(user.getWriter())) {
+		if(origin.getUserId() != user.getUserId()) {
 			return "redirect:/board/detail?id="+boarddto.getId();
 			
 		}
@@ -129,7 +129,9 @@ public class BoardController {
 	
 	@PostMapping("/board/detail/write")
 	public String commentWrite(CommentDto commentdto, HttpSession session) {
+		
 		MemberDto loginuser = (MemberDto) session.getAttribute("user");
+		
 		if(loginuser == null) {
 			return "redirect:/member/login";
 		}
@@ -147,7 +149,7 @@ public class BoardController {
 			return "redirect:/member/login";
 		}
 		
-		if(!board.getWriter().equals(user.getWriter())) {
+		if(board.getUserId() != user.getUserId()) {
 			return "redirect:/board/detail?id="+id;
 		}
 		
