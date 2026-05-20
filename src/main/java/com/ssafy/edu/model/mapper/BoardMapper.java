@@ -12,6 +12,7 @@ import com.ssafy.edu.model.dto.BoardDto;
 public interface BoardMapper {
 	List<BoardDto> selectAll(@Param("type") String type, 
 			@Param("keyword") String keyword, 
+			@Param("sort") String sort,
 			@Param("offset")int offset, 
 			@Param("size") int size);
 

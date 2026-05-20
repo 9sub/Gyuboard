@@ -31,9 +31,23 @@
         	
         	</if>
         </where>
-        ORDER BY id DESC
+        
+        <choose>
+        	<when test="sort == 'oldest'">
+        		ORDER BY writedate ASC
+        	</when>
+        	<when test="sort == 'view'">
+        		ORDER BY viewCount DESC
+        	</when>
+        	
+        	<otherwise>
+        		ORDER BY writedate DESC
+        	</otherwise>
+        </choose>
+        
         LIMIT #{size} OFFSET #{offset}
     </select>
+    
     
     <insert id="insert" parameterType="com.ssafy.edu.model.dto.BoardDto">
     	INSERT INTO guestable(

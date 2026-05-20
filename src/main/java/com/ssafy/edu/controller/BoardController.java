@@ -37,6 +37,7 @@ public class BoardController {
 	public String list(String type, 
 			String keyword, 
 			@RequestParam(defaultValue = "1") int page,
+			@RequestParam(defaultValue = "latest") String sort,
 			Model model, 
 			HttpSession session) {
 		
@@ -48,7 +49,8 @@ public class BoardController {
 		int totalCount = boardservice.count(type, keyword);
 		PageDto pagedto = new PageDto(page, size, totalCount);
 		
-		List<BoardDto> list = boardservice.list(type, keyword, pagedto.getOffset(), pagedto.getSize());
+		List<BoardDto> list = boardservice.list(type, keyword,sort, pagedto.getOffset(), pagedto.getSize());
+		model.addAttribute("sort", sort);
 		model.addAttribute("list",list);
 		model.addAttribute("type",type);
 		model.addAttribute("keyword",keyword);

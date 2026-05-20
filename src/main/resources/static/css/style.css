@@ -673,3 +673,44 @@ textarea.form-control {
 	font-size: 14px;
 	color: rgba(255,255,255,0.72);
 }
+
+.board-toolbar {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	margin-bottom: 16px;
+}
+
+.sort-select {
+	width: 140px;
+	height: 44px;
+
+	padding: 0 14px;
+
+	border: 1px solid rgba(255,255,255,0.4);
+	border-radius: 14px;
+
+	background: rgba(255,255,255,0.55);
+
+	backdrop-filter: blur(14px);
+	-webkit-backdrop-filter: blur(14px);
+
+	color: #1f2937;
+	font-size: 14px;
+	font-weight: 600;
+
+	outline: none;
+	cursor: pointer;
+
+	transition: all 0.2s ease;
+}
+
+.sort-select:hover {
+	background: rgba(255,255,255,0.72);
+	box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+}
+
+.sort-select:focus {
+	border-color: #334155;
+	box-shadow: 0 0 0 4px rgba(51,65,85,0.12);
+}

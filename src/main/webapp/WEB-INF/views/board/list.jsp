@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    
+
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 
@@ -12,18 +12,53 @@
 </head>
 
 <body>
-<%@include file="../include/header.jsp" %>
+
+<%@ include file="../include/header.jsp" %>
 
 <main class="container">
-	<h1 class="page-title">게시글 목록</h1>
-	<p class="page-desc">검색 조건을 선택해서 원하는 게시글을 찾아보세요.</p>
 
-	<form action="${root }/board/list" method="get" class="search-form">
-		<select name="type" class="form-control search-select">
-			<option value="all" <c:if test="${empty type or type == 'all'}">selected</c:if>>제목+내용</option>
-			<option value="title" <c:if test="${type == 'title'}">selected</c:if>>제목</option>
-			<option value="writer" <c:if test="${type == 'writer'}">selected</c:if>>작성자</option>
-			<option value="content" <c:if test="${type == 'content'}">selected</c:if>>내용</option>
+	<h1 class="page-title">게시글 목록</h1>
+
+	<p class="page-desc">
+		검색 조건을 선택해서 원하는 게시글을 찾아보세요.
+	</p>
+
+	<!-- 검색 영역 -->
+	<form action="${root }/board/list"
+		  method="get"
+		  class="search-form">
+
+		<select name="type"
+				class="form-control search-select">
+
+			<option value="all"
+				<c:if test="${empty type or type == 'all'}">
+					selected
+				</c:if>>
+				제목+내용
+			</option>
+
+			<option value="title"
+				<c:if test="${type == 'title'}">
+					selected
+				</c:if>>
+				제목
+			</option>
+
+			<option value="writer"
+				<c:if test="${type == 'writer'}">
+					selected
+				</c:if>>
+				작성자
+			</option>
+
+			<option value="content"
+				<c:if test="${type == 'content'}">
+					selected
+				</c:if>>
+				내용
+			</option>
+
 		</select>
 
 		<input type="text"
@@ -32,13 +67,74 @@
 			   value="${keyword }"
 			   placeholder="검색어를 입력하세요">
 
-		<button type="submit" class="btn btn-primary">검색</button>
-		<a href="${root }/board/list" class="btn btn-secondary">초기화</a>
+		<div class="search-btn-group">
+
+			<button type="submit"
+					class="btn btn-primary">
+				검색
+			</button>
+
+			<a href="${root }/board/list"
+			   class="btn btn-secondary">
+				초기화
+			</a>
+
+		</div>
+
 	</form>
 
+	<!-- 정렬 영역 -->
+	<div class="board-toolbar">
+
+		<form action="${root }/board/list"
+			  method="get">
+
+			<input type="hidden"
+				   name="type"
+				   value="${type}">
+
+			<input type="hidden"
+				   name="keyword"
+				   value="${keyword}">
+
+			<select name="sort"
+					class="sort-select"
+					onchange="this.form.submit()">
+
+				<option value="latest"
+					<c:if test="${empty sort or sort == 'latest'}">
+						selected
+					</c:if>>
+					최신순
+				</option>
+
+				<option value="oldest"
+					<c:if test="${sort == 'oldest'}">
+						selected
+					</c:if>>
+					오래된순
+				</option>
+
+				<option value="view"
+					<c:if test="${sort == 'view'}">
+						selected
+					</c:if>>
+					조회수순
+				</option>
+
+			</select>
+
+		</form>
+
+	</div>
+
+	<!-- 게시글 테이블 -->
 	<section class="card table-card">
+
 		<table class="board-table">
+
 			<thead>
+
 				<tr>
 					<th>번호</th>
 					<th>작성자</th>
@@ -47,61 +143,128 @@
 					<th>작성일</th>
 					<th>조회수</th>
 				</tr>
+
 			</thead>
 
 			<tbody>
+
 				<c:choose>
+
 					<c:when test="${empty list }">
+
 						<tr>
-							<td colspan="5" class="empty-text">검색 결과가 없습니다.</td>
+							<td colspan="6"
+								class="empty-text">
+
+								검색 결과가 없습니다.
+
+							</td>
 						</tr>
+
 					</c:when>
 
 					<c:otherwise>
-						<c:forEach var="board" items="${list }">
+
+						<c:forEach var="board"
+								   items="${list }">
+
 							<tr>
-								<td>${board.id }</td>
-								<td>${board.writer }</td>
+
 								<td>
-									<a href="${root }/board/detail?id=${board.id }" class="board-title-link">
-										${board.title }
-									</a>
+									${board.id }
 								</td>
-								<td class="board-content-preview">${board.guecontents }</td>
-								<td>${fn:substring(board.writedate,0,10) }</td>
-								<td>${board.viewCount }</td>
+
+								<td>
+									${board.writer }
+								</td>
+
+								<td>
+
+									<a href="${root }/board/detail?id=${board.id }"
+									   class="board-title-link">
+
+										${board.title }
+
+									</a>
+
+								</td>
+
+								<td class="board-content-preview">
+
+									${board.guecontents }
+
+								</td>
+
+								<td>
+
+									${fn:substring(board.writedate,0,10) }
+
+								</td>
+
+								<td>
+
+									${board.viewCount }
+
+								</td>
+
 							</tr>
+
 						</c:forEach>
+
 					</c:otherwise>
+
 				</c:choose>
+
 			</tbody>
+
 		</table>
+
 	</section>
 
+	<!-- 페이징 -->
 	<c:if test="${not empty pageDto}">
+
 		<div class="pagination">
+
 			<c:if test="${pageDto.prev}">
+
 				<a class="page-link"
-				   href="${root }/board/list?page=${pageDto.startPage - 1}&type=${type}&keyword=${keyword}">
+				   href="${root }/board/list?page=${pageDto.startPage - 1}&type=${type}&keyword=${keyword}&sort=${sort}">
+
 					이전
+
 				</a>
+
 			</c:if>
 
-			<c:forEach var="num" begin="${pageDto.startPage}" end="${pageDto.endPage}">
-				<a class="page-link ${pageDto.page == num ? 'active' : ''}"
-				   href="${root }/board/list?page=${num}&type=${type}&keyword=${keyword}">
+			<c:forEach var="num"
+					   begin="${pageDto.startPage}"
+					   end="${pageDto.endPage}">
+
+				<a class="page-link <c:if test='${pageDto.page == num}'>active</c:if>"
+				   href="${root }/board/list?page=${num}&type=${type}&keyword=${keyword}&sort=${sort}">
+
 					${num}
+
 				</a>
+
 			</c:forEach>
 
 			<c:if test="${pageDto.next}">
+
 				<a class="page-link"
-				   href="${root }/board/list?page=${pageDto.endPage + 1}&type=${type}&keyword=${keyword}">
+				   href="${root }/board/list?page=${pageDto.endPage + 1}&type=${type}&keyword=${keyword}&sort=${sort}">
+
 					다음
+
 				</a>
+
 			</c:if>
+
 		</div>
+
 	</c:if>
+
 </main>
 
 </body>

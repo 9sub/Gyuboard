@@ -16,8 +16,8 @@ public class BoardServiceImpl implements BoardService{
 	private final BoardMapper boardMapper;
 
 	@Override
-	public List<BoardDto> list(String type, String keyword, int offset, int size){
-		return boardMapper.selectAll(type, keyword, offset, size);
+	public List<BoardDto> list(String type, String keyword, String sort, int offset, int size){
+		return boardMapper.selectAll(type, keyword, sort, offset, size);
 	}
 
 	@Override
