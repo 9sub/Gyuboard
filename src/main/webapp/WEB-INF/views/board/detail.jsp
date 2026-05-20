@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -38,7 +40,7 @@
 
 				<div class="detail-row">
 					<div class="detail-label">작성일</div>
-					<div class="detail-value">${board.writedate }</div>
+					<div class="detail-value">${fn:substring(board.writedate,0,10) }</div>
 				</div>
 				
 				<div class="detail-row">
@@ -85,7 +87,7 @@
 				    <div class="comment-item">
 						<div class="comment-meta">
 					        <strong class="comment-writer">${comment.writer}</strong>
-					        <span class="comment-date">${comment.writedate}</span> 
+					        <span class="comment-date">${fn:substring(board.writedate,0,10) } ${fn:substring(board.writedate,11,16) }</span> 
 						</div>
 
 				        <p>${comment.content}</p>
