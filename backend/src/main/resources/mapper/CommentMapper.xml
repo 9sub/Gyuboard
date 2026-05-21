@@ -7,12 +7,13 @@
 
 	<select id="selectByBoardId" parameterType="int" resultType="com.ssafy.edu.model.dto.CommentDto">
 		SELECT
-			comment_id,
-			board_id,
+			c.comment_id,
+			c.board_id,
 			writer,
-			content,
-			writedate
-		FROM comment
+			c.content,
+			c.writedate
+		FROM comment c
+		JOIN ON guestable t
 		WHERE board_id = #{boardId}
 		ORDER BY comment_id ASC
 	</select>

@@ -8,6 +8,7 @@
     <select id="login" parameterType="com.ssafy.edu.model.dto.MemberDto"
     	resultType="com.ssafy.edu.model.dto.MemberDto">
     	SELECT
+    		user_id as userId,
     		writer,
     		name,
     		password,

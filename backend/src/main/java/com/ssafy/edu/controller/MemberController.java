@@ -2,79 +2,72 @@ package com.ssafy.edu.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.edu.exception.ApiException;
 import com.ssafy.edu.model.dto.BoardDto;
+import com.ssafy.edu.model.dto.LoginRequest;
+import com.ssafy.edu.model.dto.LoginResponse;
 import com.ssafy.edu.model.dto.MemberDto;
 import com.ssafy.edu.model.service.BoardService;
 import com.ssafy.edu.model.service.MemberService;
+import com.ssafy.edu.util.JwtUtil;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Controller
+@RestController
 @Slf4j
 @RequiredArgsConstructor
 public class MemberController {
 	
 	private final MemberService memberservice;
+	private final JwtUtil jwtutil;
 	
-	@GetMapping("/member/login")
-	public String loginForm() {
-		return "/member/login";
+	
+	private boolean isBlank(String value) {
+		return value == null || value.isBlank();
 	}
 	
-	@PostMapping("/member/login")
-	public String login(MemberDto memberdto, HttpSession session, Model model) {
-		log.info("입력된 로그인 정보:{}", memberdto);
-		MemberDto user = memberservice.login(memberdto);
-		log.info("db 에서 조회된로그인 유저 :{}", user);
+	
+	
+	@PostMapping("/api/member/login")
+	public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request){
+		String writer = request.getWriter();
+		
+		if(writer == null || isBlank(writer)) {
+			writer = request.getUserId();
+		}
+		
+		MemberDto loginParam = new MemberDto();
+		loginParam.setWriter(writer);
+		loginParam.setPassword(request.getPassword());
+		
+		MemberDto user = memberservice.login(loginParam);
+		
 		if(user == null) {
-			model.addAttribute("msg", "아이디 또는 비밀번호가 틀렸습니다.");
-			return "member/login";
+			throw new ApiException(HttpStatus.UNAUTHORIZED, "LOGIN_FAILED", "아이디 또는 비밀번호가 올바르지 않습니다.");
 		}
-		session.setAttribute("user", user);
-		return "redirect:/";
+		
+		String token = jwtutil.createToken(user);
+		
+		log.info("REST 로그인 성공: writer={}, userId{}", user.getWriter(), user.getUserId());
+		
+		LoginResponse response = new LoginResponse(token, user);
+		
+		return ResponseEntity.ok(response);
 	}
 	
-	@GetMapping("/logout")
-	public String logout(HttpSession session) {
-		session.invalidate();
-		return "redirect:/";
-	}
-
-	@GetMapping("/member/join")
-	public String joinForm() {
-		return "member/join";
-	}
 	
-	@PostMapping("/member/join")
-	public String join(MemberDto memberdto, Model model) {
-		log.info("회원가입 요청: {}", memberdto);
-		
-		if(memberdto.getWriter() == null || memberdto.getWriter().isEmpty()
-				|| memberdto.getPassword() == null || memberdto.getPassword().isEmpty()
-				|| memberdto.getName() == null || memberdto.getPassword().isEmpty()) {
-			model.addAttribute("msg","아이디 비번 필수");
-			return "member/join";
-		}
-		
-		MemberDto user = memberservice.findByWriter(memberdto.getWriter());
-		
-		if(user != null) {
-			model.addAttribute("alert", "해당 유저가 이미 존재합니다.");
-			return "member/login";
-		}
-		
-		memberservice.joinMember(memberdto);
-		model.addAttribute("msg","회원가입 완료");
-		return "member/login";
-		
-	}
+	
 	
 }

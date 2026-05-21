@@ -103,7 +103,7 @@
     	SELECT COUNT(*)
     	FROM guestable t
     	JOIN gueuser u
-    	u.user_id = t.user_id
+    	ON u.user_id = t.user_id
     	
     	<where>
     		<if test="keyword != null and keyword != ''">
