@@ -6,10 +6,12 @@ export const useAuthStore = defineStore('auth', {
     user: null,
     loaded: false
   }),
+
   getters: {
     isLogin: state => !!state.user,
     displayName: state => state.user?.name || state.user?.writer || state.user?.userId || ''
   },
+
   actions: {
     async fetchMe() {
       try {
@@ -20,18 +22,28 @@ export const useAuthStore = defineStore('auth', {
         this.loaded = true
       }
     },
+
     async login(payload) {
-      await authApi.login(payload)
-      await this.fetchMe()
+      const user = await authApi.login(payload)
+
+      console.log('로그인 응답:', user)
+
+      this.user = user
+      this.loaded = true
+
+      return user
     },
+
     async join(payload) {
       await authApi.join(payload)
     },
+
     async logout() {
       try {
         await authApi.logout()
       } finally {
         this.user = null
+        this.loaded = true
       }
     }
   }
