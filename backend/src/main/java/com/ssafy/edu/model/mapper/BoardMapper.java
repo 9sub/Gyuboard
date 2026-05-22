@@ -22,7 +22,7 @@ public interface BoardMapper {
 	
 	int update(BoardDto boardDto);
 	
-	int delete(int id);
+	int delete(@Param("id") int id);
 
 	int count(@Param("type") String type,@Param("keyword") String keyword);
 

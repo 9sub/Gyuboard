@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -118,18 +118,32 @@ public class BoardController {
 		
 		boardservice.update(boarddto);
 		
-		log.info("REST 게시글 수정 완료: id={}, writer={}, userId={}",
-
-	            id,
-
-	            loginUser.getWriter(),
-
-	            loginUser.getUserId()
-
-	    );
 		
 		return ResponseEntity.ok().build();
 	}
+	
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> delete(
+				@PathVariable int id,
+				@RequestAttribute("loginUser") MemberDto loginUser
+			){
+		
+		BoardDto board = boardservice.detail(id);
+		
+		if(board == null) {
+			throw new ApiException(HttpStatus.NOT_FOUND, "BOARD_NOT_FOUND", "게시글을 찾을 수 없습니다.");
+		}
+		if(loginUser.getUserId() != board.getUserId()) {
+			throw new ApiException(HttpStatus.FORBIDDEN, "FORBIDDEN", "수정 권한이 없습니다.");
+		}
+		
+		boardservice.delete(id);
+		
+		return ResponseEntity.noContent().build();
+		
+	}
+	
 	
 	
 }
