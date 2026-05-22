@@ -80,76 +80,142 @@ function goUpdate() {
   router.push(`/boards/update/${boardId}`)
 }
 
+async function deleteBoard() {
+
+  if (!confirm('정말 삭제하시겠습니까?')) {
+
+    return
+
+  }
+
+  try {
+
+    await boardApi.delete(boardId)
+
+    router.push('/board/list')
+
+  } catch (e) {
+
+    error.value =
+
+      e.response?.data?.message ||
+
+      e.message ||
+
+      '게시글 삭제에 실패했습니다.'
+
+  }
+
+}
+
 onMounted(fetchDetail)
 </script>
 
 <template>
-  <main class="page-wrap">
-    <section class="page-header">
-      <h1>게시글 상세</h1>
-      <p>게시글 내용과 댓글을 확인할 수 있어요.</p>
-    </section>
-
-    <p v-if="error" class="error-message">
-      {{ error }}
-    </p>
-
-    <section v-if="board" class="card detail-card">
-      <h2>{{ board.title }}</h2>
-
-      <div class="detail-meta">
-        <span>작성자: {{ board.writer }}</span>
-        <span>조회수: {{ board.viewCount }}</span>
-        <span>작성일: {{ board.writedate }}</span>
-      </div>
-
-      <div class="detail-content">
-        {{ board.guecontents }}
-      </div>
-
-      <div class="detail-actions">
-        <button class="btn" @click="goList">목록</button>
-        <button class="btn btn-primary" @click="goUpdate">수정</button>
+  <main class="detail-page">
+    <section class="detail-hero">
+      <div class="detail-hero-inner">
+        <p class="eyebrow">게시판</p>
+        <h1>게시글 상세</h1>
+        <p>게시글 내용과 댓글을 확인할 수 있어요.</p>
       </div>
     </section>
 
-    <section v-else class="card">
-      게시글을 불러오는 중입니다.
-    </section>
+    <section class="detail-container">
+      <p v-if="error" class="error-message">
+        {{ error }}
+      </p>
 
-    <section class="card comment-card">
-      <h2>댓글</h2>
+      <article v-if="board" class="post-card">
+        <header class="post-header">
+          <h2 class="post-title">
+            {{ board.title }}
+          </h2>
 
-      <form @submit.prevent="submitComment" class="comment-form">
-        <textarea
-          v-model="commentContent"
-          class="form-control"
-          placeholder="댓글을 입력하세요"
-        ></textarea>
+          <div class="post-meta">
+            <div class="meta-item">
+              <span class="meta-label">작성자</span>
+              <strong>{{ board.writer }}</strong>
+            </div>
 
-        <button class="btn btn-primary btn-full">
-          댓글 등록
-        </button>
-      </form>
+            <div class="meta-item">
+              <span class="meta-label">조회수</span>
+              <strong>{{ board.viewCount }}</strong>
+            </div>
 
-      <div v-if="comments.length === 0" class="empty-message">
-        댓글이 없습니다.
-      </div>
-
-      <ul v-else class="comment-list">
-        <li
-          v-for="comment in comments"
-          :key="comment.commentId"
-          class="comment-item"
-        >
-          <div class="comment-meta">
-            <strong>{{ comment.writer }}</strong>
-            <span>{{ comment.writedate }}</span>
+            <div class="meta-item">
+              <span class="meta-label">작성일</span>
+              <strong>{{ board.writedate }}</strong>
+            </div>
           </div>
+        </header>
 
-          <p>{{ comment.content }}</p>
-        </li>
-      </ul>
+        <div class="post-content">
+          <p>
+            {{ board.guecontents }}
+          </p>
+        </div>
+
+        <footer class="post-actions">
+          <button class="btn btn-light" @click="goList">
+            목록
+          </button>
+
+          <button class="btn btn-primary" @click="goUpdate">
+            수정
+          </button>
+
+          <button class="btn btn-danger" @click="deleteBoard">
+            삭제
+          </button>
+        </footer>
+      </article>
+
+      <section v-else class="post-card loading-card">
+        게시글을 불러오는 중입니다.
+      </section>
+
+      <section class="comment-card">
+        <div class="comment-header">
+          <div>
+            <h2>댓글</h2>
+            <p>{{ comments.length }}개의 댓글이 있습니다.</p>
+          </div>
+        </div>
+
+        <form @submit.prevent="submitComment" class="comment-form">
+          <textarea
+            v-model="commentContent"
+            class="comment-textarea"
+            placeholder="댓글을 입력하세요"
+          ></textarea>
+
+          <button class="btn btn-primary comment-submit">
+            댓글 등록
+          </button>
+        </form>
+
+        <div v-if="comments.length === 0" class="empty-message">
+          아직 등록된 댓글이 없습니다.
+        </div>
+
+        <ul v-else class="comment-list">
+          <li
+            v-for="comment in comments"
+            :key="comment.commentId"
+            class="comment-item"
+          >
+            <div class="comment-meta">
+              <strong>{{ comment.writer }}</strong>
+              <span>{{ comment.writedate }}</span>
+            </div>
+
+            <p class="comment-content">
+              {{ comment.content }}
+            </p>
+          </li>
+        </ul>
+      </section>
     </section>
   </main>
 </template>
