@@ -21,7 +21,6 @@ public class CommentServiceImpl implements CommentService{
 	
 	@Override
 	public List<CommentDto> list(int boardId){
-		log.info("boardId = {}", boardId);
 		return commentmapper.selectByBoardId(boardId);
 	}
 

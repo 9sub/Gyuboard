@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -89,14 +90,46 @@ public class BoardController {
 		
 		List<CommentDto> comments = commentservice.list(id);
 		
-		log.info("heloo-------------------------------------------------");  
-		log.info("comments = {}",comments.toString());
 		
 		BoardDetailResponse response = new BoardDetailResponse(boarddto, comments);
 		
 		return ResponseEntity.ok(response);
 	}
 	
+	@PutMapping("/{id}")
+	public ResponseEntity<Void> update(
+				@PathVariable int id,
+				@RequestBody BoardDto boarddto,
+				@RequestAttribute("loginUser") MemberDto loginUser
+			){
+		
+		BoardDto board = boardservice.detail(id);
+		if(board == null) {
+			throw new ApiException(HttpStatus.NOT_FOUND, "BOARD_NOT_FOUND", "게시글을 찾을 수 없습니다.");
+		}
+		if(loginUser.getUserId() != board.getUserId()) {
+			throw new ApiException(HttpStatus.FORBIDDEN, "FORBIDDEN", "수정 권한이 없습니다.");
+		}
+		
+		boarddto.setId(id);
+		boarddto.setUserId(board.getUserId());
+		
+		log.info("hello");
+		
+		boardservice.update(boarddto);
+		
+		log.info("REST 게시글 수정 완료: id={}, writer={}, userId={}",
+
+	            id,
+
+	            loginUser.getWriter(),
+
+	            loginUser.getUserId()
+
+	    );
+		
+		return ResponseEntity.ok().build();
+	}
 	
 	
 }

@@ -74,7 +74,8 @@
     <select id="selectOne" parameterType="int" resultType="com.ssafy.edu.model.dto.BoardDto">
     	SELECT
     		t.id,
-    		u.writer,
+    		t.user_id as userId,
+    		u.writer as writer,
     		t.title,
     		t.guecontents,
     		t.writedate,
@@ -82,7 +83,7 @@
     	FROM guestable as t
     	JOIN gueuser as u
     	ON t.user_id = u.user_id
-    	WHERE id = #{id}
+    	WHERE t.id = #{id}
     </select>
     
     <update id="update" parameterType="com.ssafy.edu.model.dto.BoardDto">
