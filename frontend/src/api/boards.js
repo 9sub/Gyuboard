@@ -5,8 +5,9 @@ export const boardApi = {
   detail: id => http.get(`/api/boards/${id}`).then(res => res.data),
   create: payload => http.post('/api/boards', payload).then(res => res.data),
   update: (id, payload) => http.put(`/api/boards/${id}`, payload).then(res => res.data),
-  remove: id => http.delete(`/api/boards/${id}`).then(res => res.data),
+  delete: id => http.delete(`/api/boards/${id}`).then(res => res.data),
   createComment: (boardId, payload) => http.post(`/api/boards/${boardId}/comments`, payload).then(res => res.data),
-  removeComment: commentId => http.delete(`/api/comments/${commentId}`).then(res => res.data)
+  removeComment: commentId => http.delete(`/api/comments/${commentId}`).then(res => res.data),
+  
 }
-          
+        
