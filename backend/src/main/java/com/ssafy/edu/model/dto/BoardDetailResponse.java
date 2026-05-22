@@ -10,6 +10,6 @@ import lombok.Getter;
 public class BoardDetailResponse { // 댓글 리스트 묶어서 전달 
 
 	private BoardDto board;
-	private List<CommentDto> commets;
+	private List<CommentDto> comments;
 	
 }

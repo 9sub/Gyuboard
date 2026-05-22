@@ -10,15 +10,18 @@ import com.ssafy.edu.model.mapper.BoardMapper;
 import com.ssafy.edu.model.mapper.CommentMapper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CommentServiceImpl implements CommentService{
 	
 	private final CommentMapper commentmapper;
 	
 	@Override
 	public List<CommentDto> list(int boardId){
+		log.info("boardId = {}", boardId);
 		return commentmapper.selectByBoardId(boardId);
 	}
 

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,112 +38,64 @@ public class BoardController {
 	private final BoardService boardservice;
 	private final CommentService commentservice;
 
-
-	private MemberDto getLoginUser(HttpSession session) {
-		MemberDto user = (MemberDto) session.getAttribute("user");
-		
-		if(user == null) {
-			throw new ApiException(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "로그인이 필요합니다.");
-		}
-		return user;
-	}
-	
 	@GetMapping
 	public ResponseEntity<BoardListResponse> list(
-				@RequestParam(required = false) String type,
-				@RequestParam(required = false) String keyword,
-				@RequestParam(defaultValue = "1") int page,
-				@RequestParam(defaultValue = "latest") String sort,
-				HttpSession session
+			@RequestParam(required = false) String type,
+			@RequestParam(required = false) String keyword,
+			@RequestParam(defaultValue =  "1") int page,
+			@RequestParam(defaultValue = "latest") String sort
+			
 			){
-		
-		
-		getLoginUser(session);
-		
 		int size=10;
-		int totalCount = boardservice.count(type, keyword);
-		PageDto pagedto = new PageDto(page, size, totalCount);
+		int totalCnt = boardservice.count(type, keyword);
+		PageDto pagedto = new PageDto(page, size, totalCnt);
 		
-		List<BoardDto> list = boardservice.list(type, keyword, sort, pagedto.getOffset(), pagedto.getSize());
+		List<BoardDto> list = boardservice.list(type, 
+				keyword, 
+				sort, 
+				pagedto.getOffset(), 
+				pagedto.getSize());
 		
-		BoardListResponse response = new BoardListResponse(list, pagedto, type, keyword, sort);
+		BoardListResponse response = new BoardListResponse(list, 
+				pagedto, 
+				type, 
+				keyword, 
+				sort);
 		
-		log.info("response entity list 에러 표시 {}",response);
-		
+//		log.info("REST 게시글 목록 조회: writer={}, userId={}", loginUser.getWriter(), loginUser.getUserId());
 		return ResponseEntity.ok(response);
 	}
 	
-	
 	@PostMapping
-	public ResponseEntity<Void> write(
+	public ResponseEntity<Void> wrtie(
 				@RequestBody BoardDto boarddto,
-				HttpSession session
+				@RequestAttribute("loginUser") MemberDto loginUser
 			){
+		boarddto.setUserId(loginUser.getUserId());
 		
-		MemberDto user = getLoginUser(session);
-		
-		boarddto.setUserId(user.getUserId());
 		boardservice.write(boarddto);
 		
-		log.info("REST 게시글 작성 완료: writer={}, userId={}",
-                user.getWriter(),
-                user.getUserId()
-        );
-		
 		return ResponseEntity.status(HttpStatus.CREATED).build();
-		
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<BoardDetailResponse> detail(
-				@PathVariable int id,
-				HttpSession session
+				@PathVariable int id
 			){
-		
-		getLoginUser(session);
-		
+		 
 		boardservice.updateViewCount(id);
 		
-		BoardDto board = boardservice.detail(id);
-		
-		if(board == null) {
-			throw new ApiException(HttpStatus.NOT_FOUND, "BOARD_NOT_FOUND", "게시글을 찾을 수 없습니다.");
-		}
+		BoardDto boarddto = boardservice.detail(id);
 		
 		List<CommentDto> comments = commentservice.list(id);
 		
-		BoardDetailResponse response = new BoardDetailResponse(board, comments);
+		log.info("heloo-------------------------------------------------");  
+		log.info("comments = {}",comments.toString());
+		
+		BoardDetailResponse response = new BoardDetailResponse(boarddto, comments);
 		
 		return ResponseEntity.ok(response);
-		
 	}
-	
-//	
-//	@GetMapping("/{id}")
-//	public ResponseEntity<BoardDto> update(
-//				@PathVariable int id,
-//				@RequestBody BoardDto boarddto,
-//				HttpSession session
-//			){
-//		
-//		MemberDto user = getLoginUser(session);
-//		
-//		BoardDto board = boardservice.detail(id);
-//		
-//		if(board == null) {
-//			throw new ApiException(HttpStatus.NOT_FOUND, "BOARD_NOT_FOUND", "게시글을 찾을 수 없습니다.");
-//		}
-//		
-//		if(user.getUserId() != board.getUserId()) {
-//			throw new ApiException(HttpStatus.FORBIDDEN, "FORBIDDEN", "수정 권한이 없습니다.");
-//		}
-//		
-//		boarddto.setId(id);
-//		boarddto.setUserId(user.getUserId());
-//		
-//		boardservice.update(boarddto);
-//		
-//	}
 	
 	
 	

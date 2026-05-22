@@ -3,12 +3,15 @@ package com.ssafy.edu.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,8 +29,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@Slf4j
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class MemberController {
 	
 	private final MemberService memberservice;
@@ -40,7 +43,7 @@ public class MemberController {
 	
 	
 	
-	@PostMapping("/api/member/login")
+	@PostMapping("/member/login")
 	public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request){
 		String writer = request.getWriter();
 		
@@ -60,13 +63,39 @@ public class MemberController {
 		
 		String token = jwtutil.createToken(user);
 		
-		log.info("REST 로그인 성공: writer={}, userId{}", user.getWriter(), user.getUserId());
 		
 		LoginResponse response = new LoginResponse(token, user);
 		
 		return ResponseEntity.ok(response);
 	}
 	
+	@PostMapping("/member/logout")
+	public ResponseEntity<Void> logout(){
+		return ResponseEntity.noContent().build();
+	}
+	
+	
+	@PostMapping("/member/join")
+	public ResponseEntity<Void> join(@RequestBody MemberDto memberdto){
+		if(memberdto.getWriter() == null || memberdto.getWriter().isBlank() 
+				|| memberdto.getPassword()==null || memberdto.getPassword().isBlank()
+				|| memberdto.getName() == null || memberdto.getName().isBlank()) {
+			throw new ApiException(HttpStatus.BAD_REQUEST, "INVALID_JOIN_REQUEST", "아이디 비밀번호 이름은 필수입니다.");
+		}
+		
+		MemberDto user = memberservice.findByWriter(memberdto.getWriter());
+		
+		if(user != null) {
+			throw new ApiException(HttpStatus.CONFLICT, "DUPLICATED_WRITER", "이미 존재하는 아이디입니다.");
+		}
+		memberservice.joinMember(memberdto);
+		return ResponseEntity.status(HttpStatus.CREATED).build();
+	}
+	
+	@GetMapping("/me")
+	public ResponseEntity<MemberDto> me(@RequestAttribute("loginUser") MemberDto loginUser){
+		return ResponseEntity.ok(loginUser);
+	}
 	
 	
 	

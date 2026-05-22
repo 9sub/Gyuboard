@@ -21,6 +21,7 @@
     
     <select id="selectByWriter" parameterType="String" resultType="com.ssafy.edu.model.dto.MemberDto">
     	SELECT
+    		user_id as userId,
     		writer,
     		name,
     		password,
