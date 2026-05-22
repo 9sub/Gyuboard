@@ -359,3 +359,94 @@ textarea.form-control { min-height: 180px; resize: vertical; }
     flex-direction: column;
   }
 }
+
+.write-page {
+  min-height: calc(100vh - 70px);
+  background: #f5f7fb;
+  color: #1f2937;
+}
+
+.write-hero {
+  border-bottom: 1px solid #e5e7eb;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+}
+
+.write-hero-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 44px 24px 36px;
+}
+
+.write-hero h1 {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+.write-hero p {
+  margin: 12px 0 0;
+  color: #6b7280;
+  font-size: 16px;
+}
+
+.write-container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 32px 24px 56px;
+}
+
+.write-card {
+  padding: 34px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 22px;
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.06);
+}
+
+.form-group {
+  margin-bottom: 22px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 10px;
+  color: #111827;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.form-control,
+.form-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  font-size: 16px;
+  outline: none;
+}
+
+.form-control {
+  height: 48px;
+  padding: 0 16px;
+}
+
+.form-textarea {
+  min-height: 260px;
+  padding: 16px;
+  resize: vertical;
+  line-height: 1.7;
+}
+
+.form-control:focus,
+.form-textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 10px;
+}

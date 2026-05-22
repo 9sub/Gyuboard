@@ -77,7 +77,7 @@ function goList() {
 }
 
 function goUpdate() {
-  router.push(`/boards/update/${boardId}`)
+  router.push(`/board/update/${boardId}`)
 }
 
 async function deleteBoard() {
