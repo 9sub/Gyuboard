@@ -9,3 +9,4 @@ export const boardApi = {
   createComment: (boardId, payload) => http.post(`/api/boards/${boardId}/comments`, payload).then(res => res.data),
   removeComment: commentId => http.delete(`/api/comments/${commentId}`).then(res => res.data)
 }
+          

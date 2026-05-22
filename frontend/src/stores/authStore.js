@@ -9,29 +9,34 @@ export const useAuthStore = defineStore('auth', {
 
   getters: {
     isLogin: state => !!state.user,
-    displayName: state => state.user?.name || state.user?.writer || state.user?.userId || ''
+    displayName: state =>
+      state.user?.name || state.user?.writer || state.user?.userId || ''
   },
 
   actions: {
     async fetchMe() {
       try {
-        this.user = await authApi.me()
+        const user = await authApi.me()
+        this.user = user
       } catch {
         this.user = null
+        localStorage.removeItem('accessToken')
       } finally {
         this.loaded = true
       }
     },
 
     async login(payload) {
-      const user = await authApi.login(payload)
+      const response = await authApi.login(payload)
 
-      console.log('로그인 응답:', user)
+      console.log('로그인 응답:', response)
 
-      this.user = user
+      localStorage.setItem('accessToken', response.token)
+
+      this.user = response.user
       this.loaded = true
 
-      return user
+      return response
     },
 
     async join(payload) {
@@ -44,6 +49,7 @@ export const useAuthStore = defineStore('auth', {
       } finally {
         this.user = null
         this.loaded = true
+        localStorage.removeItem('accessToken')
       }
     }
   }
