@@ -15,4 +15,5 @@ public class BoardDto {
 	private String guecontents;
 	private LocalDateTime writedate;
 	private int viewCount;
+	private int commentCount;
 }

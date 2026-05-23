@@ -74,7 +74,18 @@ onMounted(load)
         <thead><tr><th>번호</th><th>작성자</th><th>제목</th><th>내용</th><th>작성일</th><th>조회수</th></tr></thead>
         <tbody>
           <tr v-for="(board, index) in boards" :key="board.id" @click="detail(board.id)">
-            <td>{{ displayNumber(index) }}</td><td>{{ board.writer || board.userId }}</td><td class="title-cell">{{ board.title }}</td><td>{{ board.guecontents }}</td><td>{{ fmt(board.writedate) }}</td><td>{{ board.viewCount ?? 0 }}</td>
+            <td>{{ displayNumber(index) }}</td><td>{{ board.writer || board.userId }}</td>
+              <td class="title-cell">
+                <span class="board-title-text">{{ board.title }}</span>
+                            
+                <span
+                  v-if="board.commentCount > 0"
+                  class="comment-count"
+                >
+                  {{ board.commentCount }}
+                </span>
+              </td>
+            <td>{{ board.guecontents }}</td><td>{{ fmt(board.writedate) }}</td><td>{{ board.viewCount ?? 0 }}</td>
           </tr>
           <tr v-if="!boards.length"><td colspan="6" class="empty-text">게시글이 없습니다.</td></tr>
         </tbody>

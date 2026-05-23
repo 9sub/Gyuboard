@@ -12,11 +12,14 @@
         	t.title, 
         	t.guecontents, 
         	t.writedate, 
-        	t.view_count as viewCount
+        	t.view_count as viewCount,
+        	COUNT(c.comment_id) as commentCount
         FROM guestable as t
         
         JOIN gueuser u
         ON t.user_id = u.user_id
+        LEFT JOIN comment c
+        ON c.board_id = t.id
         
         <where>
         	<if test="keyword != null and keyword != ''">
@@ -40,6 +43,15 @@
         	
         	</if>
         </where>
+        
+        GROUP BY
+        	t.id,
+        	t.user_id,
+        	u.writer,
+        	t.title,
+        	t.guecontents,
+        	t.writedate,
+        	t.view_count
         
         <choose>
         	<when test="sort == 'oldest'">
