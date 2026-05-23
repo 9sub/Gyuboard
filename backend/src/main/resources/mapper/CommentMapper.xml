@@ -9,6 +9,7 @@
 		SELECT
 			c.comment_id as commentId,
 			c.board_id as boardId,
+			c.user_id as userId,
 			u.writer as writer,
 			c.content,
 			c.writedate
@@ -19,22 +20,41 @@
 		ORDER BY c.comment_id ASC
 	</select>
 	
+	<select id="selectOne" parameterType="int" resultType="com.ssafy.edu.model.dto.CommentDto">
+		SELECT
+			c.comment_id as commentId,
+			c.user_id as userId,
+			c.board_id as boardId,
+			u.writer as writer,
+			c.content,
+			c.writedate
+		FROM comment c
+		JOIN gueuser u
+		ON c.user_id = u.user_id
+		WHERE c.comment_id = #{commentId}
+	</select>
+	
 	<insert id="insert" parameterType="com.ssafy.edu.model.dto.CommentDto">
 		INSERT INTO comment(
 			board_id,
-			writer,
+			user_id,
 			content
 		)
 		VALUES(
 			#{boardId},
-			#{writer},
+			#{userId},
 			#{content}
 		)
 	</insert>
 	
 	<delete id="delete" parameterType="int">
-		DELETE from comment
+		DELETE FROM comment
 		WHERE comment_id = #{commentId}
+	</delete>
+	
+	<delete id="deleteByBoardId" parameterType="int">
+		DELETE FROM comment
+		WHERE board_id = #{boardId}
 	</delete>
     
 

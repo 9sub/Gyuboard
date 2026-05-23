@@ -3,6 +3,9 @@ import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { boardApi } from '../api/boards'
 import { commentApi } from '../api/comments'
+import { useAuthStore } from '../stores/authStore'
+
+const auth = useAuthStore()
 
 const route = useRoute()
 const router = useRouter()
@@ -108,6 +111,30 @@ async function deleteBoard() {
 
 }
 
+async function deleteComment(commentId) {
+  console.log('댓글 삭제 클릭 commentId:', commentId)
+
+  if (!confirm('댓글을 삭제하시겠습니까?')) {
+    return
+  }
+
+  try {
+    const result = await commentApi.delete(commentId)
+
+    console.log('댓글 삭제 성공:', result)
+
+    await fetchDetail()
+  } catch (e) {
+    console.error('댓글 삭제 실패:', e)
+    console.error('응답:', e.response?.data)
+
+    error.value =
+      e.response?.data?.message ||
+      e.message ||
+      '댓글 삭제에 실패했습니다.'
+  }
+}
+
 onMounted(fetchDetail)
 </script>
 
@@ -209,10 +236,19 @@ onMounted(fetchDetail)
               <strong>{{ comment.writer }}</strong>
               <span>{{ comment.writedate }}</span>
             </div>
-
+          
             <p class="comment-content">
               {{ comment.content }}
             </p>
+
+          
+            <button
+              v-if="auth.user && Number(auth.user.userId) === Number(comment.userId)"
+              class="btn btn-danger"
+              @click="deleteComment(comment.commentId)"
+            >
+              삭제
+            </button>
           </li>
         </ul>
       </section>

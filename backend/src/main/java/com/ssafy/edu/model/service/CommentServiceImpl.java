@@ -36,4 +36,16 @@ public class CommentServiceImpl implements CommentService{
 		return commentmapper.delete(commentId);
 	}
 
+	@Override
+	public int deleteByBoardId(int boardId) {
+		// TODO Auto-generated method stub
+		return commentmapper.deleteByBoardId(boardId);
+	}
+
+	@Override
+	public CommentDto detail(int commentId) {
+		// TODO Auto-generated method stub
+		return commentmapper.selectOne(commentId);
+	}
+
 }

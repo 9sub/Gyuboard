@@ -46,7 +46,7 @@
         		ORDER BY t.writedate ASC
         	</when>
         	<when test="sort == 'view'">
-        		ORDER BY t.viewCount DESC
+        		ORDER BY t.view_count DESC
         	</when>
         	
         	<otherwise>

@@ -13,7 +13,11 @@ import com.ssafy.edu.model.dto.CommentDto;
 public interface CommentMapper {
 	List<CommentDto> selectByBoardId(@Param("boardId") int boardId);
 	
+	CommentDto selectOne(@Param("commentId") int commentId);
+	
 	int insert(CommentDto commentdto);
 	
-	int delete(@Param("commentID") int commentId);
+	int delete(@Param("commentId") int commentId);
+	
+	int deleteByBoardId(@Param("boardId") int boardId);
 }
