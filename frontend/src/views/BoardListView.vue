@@ -39,6 +39,19 @@ watch(() => route.query, q => {
   search.sort = q.sort || 'latest'
   load()
 })
+
+function displayNumber(index) {
+
+  if (!pageDto.value) {
+
+    return index + 1
+
+  }
+
+  return pageDto.value.totalCount - ((pageDto.value.page - 1) * pageDto.value.size) - index
+
+}
+
 onMounted(load)
 </script>
 <template>
@@ -60,8 +73,8 @@ onMounted(load)
       <table class="board-table">
         <thead><tr><th>번호</th><th>작성자</th><th>제목</th><th>내용</th><th>작성일</th><th>조회수</th></tr></thead>
         <tbody>
-          <tr v-for="board in boards" :key="board.id" @click="detail(board.id)">
-            <td>{{ board.id }}</td><td>{{ board.writer || board.userId }}</td><td class="title-cell">{{ board.title }}</td><td>{{ board.guecontents }}</td><td>{{ fmt(board.writedate) }}</td><td>{{ board.viewCount ?? 0 }}</td>
+          <tr v-for="(board, index) in boards" :key="board.id" @click="detail(board.id)">
+            <td>{{ displayNumber(index) }}</td><td>{{ board.writer || board.userId }}</td><td class="title-cell">{{ board.title }}</td><td>{{ board.guecontents }}</td><td>{{ fmt(board.writedate) }}</td><td>{{ board.viewCount ?? 0 }}</td>
           </tr>
           <tr v-if="!boards.length"><td colspan="6" class="empty-text">게시글이 없습니다.</td></tr>
         </tbody>
