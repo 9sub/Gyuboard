@@ -157,6 +157,14 @@ async function deleteComment(commentId) {
   }
 }
 
+function formatDateTime(value) {
+  if (!value) return ''
+
+  return String(value)
+    .replace('T', ' ')
+    .slice(0, 16)
+}
+
 
 async function updateComment(commentId) {
   if (!editingCommentContent.value.trim()) {
@@ -223,7 +231,7 @@ onMounted(fetchDetail)
 
             <div class="meta-item">
               <span class="meta-label">작성일</span>
-              <strong>{{ board.writedate }}</strong>
+              <strong>{{ formatDateTime(board.writedate) }}</strong>
             </div>
           </div>
         </header>
@@ -285,7 +293,7 @@ onMounted(fetchDetail)
           >
             <div class="comment-meta">
               <strong>{{ comment.name || comment.writer }}</strong>
-              <span>{{ comment.writedate }}</span>
+              <span>{{ formatDateTime(comment.writedate) }}</span>
             </div>
           
             <div v-if="editingCommentId === comment.commentId" class="comment-edit-box">
