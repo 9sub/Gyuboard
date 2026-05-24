@@ -8,7 +8,9 @@
     <select id="selectAll" resultType="com.ssafy.edu.model.dto.BoardDto">
         SELECT
         	t.id,
-        	u.writer, 
+        	t.user_id as userId, 
+        	u.writer as writer, 
+        	u.name as name,
         	t.title, 
         	t.guecontents, 
         	t.writedate, 
@@ -28,6 +30,8 @@
         				t.title LIKE CONCAT('%', #{keyword}, '%')
         			</when>
         			<when test="type == 'writer'">
+        				u.name LIKE CONCAT('%', #{keyword}, '%')
+        				OR
         				u.writer LIKE CONCAT('%', #{keyword}, '%')
         			</when>
         			<when test="type == 'content'">
@@ -36,7 +40,12 @@
         			
         			<otherwise>
         				t.title LIKE CONCAT('%', #{keyword}, '%')
-        				OR t.guecontents LIKE CONCAT('%', #{keyword}, '%')
+
+    					OR t.guecontents LIKE CONCAT('%', #{keyword}, '%')
+
+    					OR u.name LIKE CONCAT('%', #{keyword}, '%')
+
+    					OR u.writer LIKE CONCAT('%', #{keyword}, '%')
         			</otherwise>
         			
         		</choose>
@@ -88,6 +97,7 @@
     		t.id,
     		t.user_id as userId,
     		u.writer as writer,
+    		u.name as name,
     		t.title,
     		t.guecontents,
     		t.writedate,
@@ -125,6 +135,8 @@
         				t.title LIKE CONCAT('%', #{keyword}, '%')
         			</when>
         			<when test="type == 'writer'">
+        				u.name LIKE CONCAT('%', #{keyword}, '%')
+        				OR
         				u.writer LIKE CONCAT('%', #{keyword}, '%')
         			</when>
         			<when test="type == 'content'">
@@ -133,7 +145,12 @@
         			
         			<otherwise>
         				t.title LIKE CONCAT('%', #{keyword}, '%')
-        				OR t.guecontents LIKE CONCAT('%', #{keyword}, '%')
+
+    					OR t.guecontents LIKE CONCAT('%', #{keyword}, '%')
+
+    					OR u.name LIKE CONCAT('%', #{keyword}, '%')
+
+    					OR u.writer LIKE CONCAT('%', #{keyword}, '%')
         			</otherwise>
     			</choose>
     		</if>

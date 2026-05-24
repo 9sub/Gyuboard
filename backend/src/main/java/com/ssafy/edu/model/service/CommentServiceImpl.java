@@ -48,4 +48,10 @@ public class CommentServiceImpl implements CommentService{
 		return commentmapper.selectOne(commentId);
 	}
 
+	@Override
+	public int update(CommentDto commentdto) {
+		// TODO Auto-generated method stub
+		return commentmapper.update(commentdto);
+	}
+
 }

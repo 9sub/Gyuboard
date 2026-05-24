@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -70,5 +71,48 @@ public class CommentController {
 		
 		return ResponseEntity.noContent().build();
 	}
+	
+	@PutMapping("/comments/{commentId}")
+	public ResponseEntity<Void> update(
+			@PathVariable int commentId,
+			@RequestBody CommentDto commentdto,
+			@RequestAttribute("loginUser") MemberDto loginUser
+			){
+		CommentDto origin = commentservice.detail(commentId);
+		
+		if(origin == null) {
+			throw new ApiException(HttpStatus.NOT_FOUND, "NOT_FOUND", "댓글을 찾을 수 없습니다.");
+		}
+		
+		if(origin.getUserId()!= loginUser.getUserId()) {
+			throw new ApiException(HttpStatus.FORBIDDEN, "FORBIDDEN", "댓글수정 권한이 없습니다.");
+		}
+		
+		if(commentdto.getContent() == null) {
+			throw new ApiException(HttpStatus.BAD_REQUEST, "INVALID_COMMENT_CONTENT", "댓글 내용을 입력해주세요.");
+		}
+		
+		commentdto.setCommentId(commentId);
+		commentdto.setUserId(loginUser.getUserId());
+		
+		int result = commentservice.update(commentdto);
+		
+		log.info("댓글 수정 결과 result={}, commentId={}, content={}",
+
+	            result,
+
+	            commentId,
+
+	            commentdto.getContent()
+
+	    );
+		
+		if(result == 0) {
+			throw new ApiException(HttpStatus.BAD_REQUEST, "COMMENT_UPDATE_FAILED", "댓글 수정에 실패했습니다.");
+		}
+		
+		return ResponseEntity.ok().build();
+	}
+	
 	
 }

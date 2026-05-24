@@ -10,6 +10,7 @@ public class CommentDto {
 	private int boardId;
 	private int userId;
 	private String writer;
+	private String name;
 	private String content;
 	private LocalDateTime writedate;
 }

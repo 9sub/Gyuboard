@@ -11,6 +11,7 @@
 			c.board_id as boardId,
 			c.user_id as userId,
 			u.writer as writer,
+			u.name as name,
 			c.content,
 			c.writedate
 		FROM comment c
@@ -26,6 +27,7 @@
 			c.user_id as userId,
 			c.board_id as boardId,
 			u.writer as writer,
+			u.name as name,
 			c.content,
 			c.writedate
 		FROM comment c
@@ -56,6 +58,14 @@
 		DELETE FROM comment
 		WHERE board_id = #{boardId}
 	</delete>
+	
+	<update id="update" parameterType="com.ssafy.edu.model.dto.CommentDto">
+		UPDATE comment
+		SET
+			content = #{content}
+		WHERE comment_id = #{commentId}
+		AND user_id = #{userId}
+	</update>
     
 
 </mapper>

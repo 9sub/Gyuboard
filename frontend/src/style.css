@@ -475,3 +475,26 @@ textarea.form-control { min-height: 180px; resize: vertical; }
   font-weight: 900;
   vertical-align: middle;
 }
+
+.comment-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.comment-action-btn {
+  min-width: 70px;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.comment-edit-box {
+  margin-top: 12px;
+}
+
+.comment-edit-box .comment-textarea {
+  min-height: 90px;
+}

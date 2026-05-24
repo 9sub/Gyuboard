@@ -15,8 +15,30 @@ const comments = ref([])
 const commentContent = ref('')
 const error = ref('')
 
+
+
 const boardId = route.params.id
 
+
+const editingCommentId = ref(null)
+
+const editingCommentContent = ref('')
+
+function startEditComment(comment) {
+
+  editingCommentId.value = comment.commentId
+
+  editingCommentContent.value = comment.content
+
+}
+
+function cancelEditComment() {
+
+  editingCommentId.value = null
+
+  editingCommentContent.value = ''
+
+}
 async function fetchDetail() {
   try {
     error.value = ''
@@ -135,6 +157,35 @@ async function deleteComment(commentId) {
   }
 }
 
+
+async function updateComment(commentId) {
+  if (!editingCommentContent.value.trim()) {
+    error.value = '댓글 내용을 입력해주세요.'
+    return
+  }
+
+  try {
+    error.value = ''
+
+    await commentApi.update(commentId, {
+      content: editingCommentContent.value
+    })
+
+    editingCommentId.value = null
+    editingCommentContent.value = ''
+
+    await fetchDetail()
+  } catch (e) {
+    console.error('댓글 수정 실패:', e)
+    console.error('응답:', e.response?.data)
+
+    error.value =
+      e.response?.data?.message ||
+      e.message ||
+      '댓글 수정에 실패했습니다.'
+  }
+}
+
 onMounted(fetchDetail)
 </script>
 
@@ -162,7 +213,7 @@ onMounted(fetchDetail)
           <div class="post-meta">
             <div class="meta-item">
               <span class="meta-label">작성자</span>
-              <strong>{{ board.writer }}</strong>
+              <strong>{{ board.name || board.writer }}</strong>
             </div>
 
             <div class="meta-item">
@@ -233,22 +284,61 @@ onMounted(fetchDetail)
             class="comment-item"
           >
             <div class="comment-meta">
-              <strong>{{ comment.writer }}</strong>
+              <strong>{{ comment.name || comment.writer }}</strong>
               <span>{{ comment.writedate }}</span>
             </div>
           
-            <p class="comment-content">
-              {{ comment.content }}
-            </p>
-
+            <div v-if="editingCommentId === comment.commentId" class="comment-edit-box">
+              <textarea
+                v-model="editingCommentContent"
+                class="comment-textarea"
+              ></textarea>
+            
+              <div class="comment-actions">
+                <button
+                  type="button"
+                  class="btn btn-primary comment-action-btn"
+                  @click="updateComment(comment.commentId)"
+                >
+                  수정 완료
+                </button>
+              
+                <button
+                  type="button"
+                  class="btn btn-light comment-action-btn"
+                  @click="cancelEditComment"
+                >
+                  취소
+                </button>
+              </div>
+            </div>
           
-            <button
-              v-if="auth.user && Number(auth.user.userId) === Number(comment.userId)"
-              class="btn btn-danger"
-              @click="deleteComment(comment.commentId)"
-            >
-              삭제
-            </button>
+            <template v-else>
+              <p class="comment-content">
+                {{ comment.content }}
+              </p>
+            
+              <div
+                v-if="auth.user && Number(auth.user.userId) === Number(comment.userId)"
+                class="comment-actions"
+              >
+                <button
+                  type="button"
+                  class="btn btn-primary comment-action-btn"
+                  @click="startEditComment(comment)"
+                >
+                  수정
+                </button>
+              
+                <button
+                  type="button"
+                  class="btn btn-danger comment-action-btn"
+                  @click="deleteComment(comment.commentId)"
+                >
+                  삭제
+                </button>
+              </div>
+            </template>
           </li>
         </ul>
       </section>

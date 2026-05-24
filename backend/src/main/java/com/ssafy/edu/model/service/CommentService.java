@@ -14,6 +14,7 @@ public interface CommentService {
 	
 	int write(CommentDto commentdto);
 	int delete(int commentId);
+	int update(CommentDto commentdto);
 	
 	int deleteByBoardId(@Param("boardId") int boardId);
 }

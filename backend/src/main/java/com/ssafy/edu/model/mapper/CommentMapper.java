@@ -17,6 +17,8 @@ public interface CommentMapper {
 	
 	int insert(CommentDto commentdto);
 	
+	int update(CommentDto commentdto);
+	
 	int delete(@Param("commentId") int commentId);
 	
 	int deleteByBoardId(@Param("boardId") int boardId);
