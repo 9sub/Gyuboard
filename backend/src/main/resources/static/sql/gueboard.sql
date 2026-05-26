@@ -57,6 +57,30 @@ CREATE TABLE `comment` (
         ON UPDATE CASCADE
 );
 
+CREATE TABLE `board_like` (
+    `board_id` INT NOT NULL,
+    `user_id` INT NOT NULL,
+    `likedate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (`board_id`, `user_id`),
+
+    CONSTRAINT `fk_board_like_board`
+        FOREIGN KEY (`board_id`)
+        REFERENCES `guestable` (`id`)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    CONSTRAINT `fk_board_like_user`
+        FOREIGN KEY (`user_id`)
+        REFERENCES `gueuser` (`user_id`)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+CREATE INDEX `idx_board_like_user_id`
+ON `board_like` (`user_id`);
+
+
 CREATE INDEX `idx_guestable_user_id`
 ON `guestable` (`user_id`);
 

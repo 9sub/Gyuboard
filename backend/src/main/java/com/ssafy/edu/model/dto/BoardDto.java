@@ -17,4 +17,7 @@ public class BoardDto {
 	private LocalDateTime writedate;
 	private int viewCount;
 	private int commentCount;
+	
+	private int likeCount;
+	private boolean liked;
 }
