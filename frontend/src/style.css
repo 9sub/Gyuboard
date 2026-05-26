@@ -498,3 +498,11 @@ textarea.form-control { min-height: 180px; resize: vertical; }
 .comment-edit-box .comment-textarea {
   min-height: 90px;
 }
+
+.edited-label {
+  margin-left: 6px;
+  color: #64748b;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+}

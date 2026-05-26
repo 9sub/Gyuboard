@@ -293,7 +293,10 @@ onMounted(fetchDetail)
           >
             <div class="comment-meta">
               <strong>{{ comment.name || comment.writer }}</strong>
-              <span>{{ formatDateTime(comment.writedate) }}</span>
+              <span>
+                {{ formatDateTime(comment.updatedate || comment.writedate) }}
+                <em v-if="comment.updatedate" class="edited-label">(수정됨)</em>
+              </span>
             </div>
           
             <div v-if="editingCommentId === comment.commentId" class="comment-edit-box">

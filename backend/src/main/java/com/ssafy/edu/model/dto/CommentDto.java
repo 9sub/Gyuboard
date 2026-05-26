@@ -13,4 +13,6 @@ public class CommentDto {
 	private String name;
 	private String content;
 	private LocalDateTime writedate;
+	private LocalDateTime updatedate;
+	
 }
