@@ -79,6 +79,7 @@ public class BoardController {
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 	
+	
 	@GetMapping("/{id}")
 	public ResponseEntity<BoardDetailResponse> detail(
 				@PathVariable int id
@@ -138,11 +139,14 @@ public class BoardController {
 			throw new ApiException(HttpStatus.FORBIDDEN, "FORBIDDEN", "수정 권한이 없습니다.");
 		}
 		
+		commentservice.deleteByBoardId(id);
 		boardservice.delete(id);
 		
 		return ResponseEntity.noContent().build();
 		
 	}
+	
+	
 	
 	
 	
