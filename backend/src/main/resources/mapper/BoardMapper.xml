@@ -15,7 +15,12 @@
         	t.guecontents, 
         	t.writedate, 
         	t.view_count as viewCount,
-        	COUNT(c.comment_id) as commentCount
+        	COUNT(c.comment_id) as commentCount,
+        	(
+        		SELECT COUNT(*)
+        		FROM board_like as bl
+        		WHERE bl.board_id = t.id
+        	)as likeCount
         FROM guestable as t
         
         JOIN gueuser u
@@ -57,10 +62,12 @@
         	t.id,
         	t.user_id,
         	u.writer,
+        	u.name,
         	t.title,
         	t.guecontents,
         	t.writedate,
         	t.view_count
+        	
         
         <choose>
         	<when test="sort == 'oldest'">
@@ -101,7 +108,12 @@
     		t.title,
     		t.guecontents,
     		t.writedate,
-    		t.view_count as viewCount
+    		t.view_count as viewCount,
+    		(
+    			SELECT COUNT(*)
+    			FROM board_like as bl
+    			WHERE bl.board_id = t.id
+    		)as likeCount
     	FROM guestable as t
     	JOIN gueuser as u
     	ON t.user_id = u.user_id

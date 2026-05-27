@@ -23,6 +23,7 @@ import com.ssafy.edu.model.dto.BoardListResponse;
 import com.ssafy.edu.model.dto.CommentDto;
 import com.ssafy.edu.model.dto.MemberDto;
 import com.ssafy.edu.model.dto.PageDto;
+import com.ssafy.edu.model.service.BoardLikeService;
 import com.ssafy.edu.model.service.BoardService;
 import com.ssafy.edu.model.service.CommentService;
 
@@ -38,6 +39,7 @@ public class BoardController {
 	
 	private final BoardService boardservice;
 	private final CommentService commentservice;
+	private final BoardLikeService boardlikeservice;
 
 	@GetMapping
 	public ResponseEntity<BoardListResponse> list(
@@ -82,14 +84,25 @@ public class BoardController {
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<BoardDetailResponse> detail(
-				@PathVariable int id
+				@PathVariable int id,
+				@RequestAttribute("loginUser") MemberDto loginUser
 			){
 		 
 		boardservice.updateViewCount(id);
 		
 		BoardDto boarddto = boardservice.detail(id);
 		
+		
+		if(boarddto == null) {
+			throw new ApiException(HttpStatus.NOT_FOUND, "BOARD_NOT_FOUND", "게시글을 찾을 수 없습니다.");
+		}
+		
+		boarddto.setLikeCount(boardlikeservice.count(id));
+		
+		boarddto.setLiked(boardlikeservice.isLiked(id, loginUser.getUserId()));
+		log.info("board {}",boarddto);
 		List<CommentDto> comments = commentservice.list(id);
+		
 		
 		
 		BoardDetailResponse response = new BoardDetailResponse(boarddto, comments);
@@ -139,12 +152,15 @@ public class BoardController {
 			throw new ApiException(HttpStatus.FORBIDDEN, "FORBIDDEN", "수정 권한이 없습니다.");
 		}
 		
+		boardlikeservice.deleteByBoardId(id);
 		commentservice.deleteByBoardId(id);
 		boardservice.delete(id);
 		
 		return ResponseEntity.noContent().build();
 		
 	}
+	
+	
 	
 	
 	

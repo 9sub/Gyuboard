@@ -3,23 +3,23 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ssafy.edu.model.mapper.BoardMapper">
+<mapper namespace="com.ssafy.edu.model.mapper.BoardLikeMapper">
 
    <select id="countByBoardId">
    		SELECT COUNT(*)
    		FROM board_like
-   		WHERE board_id = #{board_id}
+   		WHERE board_id = #{boardId}
    </select>
    
    <select id="exists">
    		SELECT COUNT(*)
    		FROM board_like
-   		WHERE baord_id = #{boardId} 
+   		WHERE board_id = #{boardId} 
    		AND
    		user_id = #{userId}
    </select>
    
-   <insert id="insert" parameterType="int">
+   <insert id="insert">
    		INSERT INTO board_like(
    			board_id,
    			user_id
@@ -29,6 +29,17 @@
    			#{userId}
    		)
    </insert>
+   
+   <delete id="delete">
+   		DELETE FROM board_like
+   		WHERE board_id = #{boardId}
+   		AND user_id = #{userId}
+   </delete>
+   
+   <delete id="deleteByBoardId">
+   		DELETE FROM board_like
+   		WHERE board_id = #{boardId}
+   </delete>
    
    
 

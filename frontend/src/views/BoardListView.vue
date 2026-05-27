@@ -71,7 +71,16 @@ onMounted(load)
     </div>
     <section class="card table-card">
       <table class="board-table">
-        <thead><tr><th>번호</th><th>작성자</th><th>제목</th><th>내용</th><th>작성일</th><th>조회수</th></tr></thead>
+        <thead>
+          <tr>
+            <th>번호</th>
+            <th>작성자</th>
+            <th>제목</th>
+            <th>내용</th>
+            <th>작성일</th>
+            <th>조회수</th>
+            <th>좋아요</th>
+          </tr></thead>
         <tbody>
           <tr v-for="(board, index) in boards" :key="board.id" @click="detail(board.id)">
             <td>{{ displayNumber(index) }}</td><td>{{ board.name || board.writer || board.userId }}</td>
@@ -85,9 +94,9 @@ onMounted(load)
                   {{ board.commentCount }}
                 </span>
               </td>
-            <td>{{ board.guecontents }}</td><td>{{ fmt(board.writedate) }}</td><td>{{ board.viewCount ?? 0 }}</td>
+            <td>{{ board.guecontents }}</td><td>{{ fmt(board.writedate) }}</td><td>{{ board.viewCount ?? 0 }}</td><td>{{ board.likeCount ?? 0 }}</td>
           </tr>
-          <tr v-if="!boards.length"><td colspan="6" class="empty-text">게시글이 없습니다.</td></tr>
+          <tr v-if="!boards.length"><td colspan="7" class="empty-text">게시글이 없습니다.</td></tr>
         </tbody>
       </table>
     </section>

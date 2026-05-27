@@ -6,51 +6,24 @@ import { commentApi } from '../api/comments'
 import { useAuthStore } from '../stores/authStore'
 
 const auth = useAuthStore()
-
 const route = useRoute()
 const router = useRouter()
+
+const boardId = route.params.id
 
 const board = ref(null)
 const comments = ref([])
 const commentContent = ref('')
 const error = ref('')
 
-
-
-const boardId = route.params.id
-
-
 const editingCommentId = ref(null)
-
 const editingCommentContent = ref('')
 
-function startEditComment(comment) {
-
-  editingCommentId.value = comment.commentId
-
-  editingCommentContent.value = comment.content
-
-}
-
-function cancelEditComment() {
-
-  editingCommentId.value = null
-
-  editingCommentContent.value = ''
-
-}
 async function fetchDetail() {
   try {
     error.value = ''
 
-    console.log('상세 route.params:', route.params)
-    console.log('상세 boardId:', boardId)
-
     const response = await boardApi.detail(boardId)
-
-    console.log('상세 API 응답:', response)
-    console.log('상세 API 응답 JSON:', JSON.stringify(response, null, 2))
-    console.log('응답 keys:', Object.keys(response))
 
     board.value =
       response.board ||
@@ -60,9 +33,6 @@ async function fetchDetail() {
       null
 
     comments.value = response.comments || []
-
-    console.log('board.value:', board.value)
-    console.log('comments.value:', comments.value)
 
     if (!board.value) {
       error.value = '게시글 데이터가 응답에 없습니다.'
@@ -79,9 +49,14 @@ async function fetchDetail() {
 }
 
 async function submitComment() {
-  if (!commentContent.value.trim()) return
+  if (!commentContent.value.trim()) {
+    error.value = '댓글 내용을 입력해주세요.'
+    return
+  }
 
   try {
+    error.value = ''
+
     await commentApi.write(boardId, {
       content: commentContent.value
     })
@@ -89,11 +64,30 @@ async function submitComment() {
     commentContent.value = ''
     await fetchDetail()
   } catch (e) {
-    console.error(e)
+    console.error('댓글 등록 실패:', e)
+    console.error('응답:', e.response?.data)
+
     error.value =
       e.response?.data?.message ||
       e.message ||
       '댓글 등록에 실패했습니다.'
+  }
+}
+
+async function toggleLike() {
+  try {
+    const response = await boardApi.like(boardId)
+
+    board.value.liked = response.liked
+    board.value.likeCount = response.likeCount
+  } catch (e) {
+    console.error('좋아요 처리 실패:', e)
+    console.error('응답:', e.response?.data)
+
+    error.value =
+      e.response?.data?.message ||
+      e.message ||
+      '좋아요 처리에 실패했습니다.'
   }
 }
 
@@ -106,65 +100,33 @@ function goUpdate() {
 }
 
 async function deleteBoard() {
-
   if (!confirm('정말 삭제하시겠습니까?')) {
-
     return
-
   }
 
   try {
-
     await boardApi.delete(boardId)
-
     router.push('/board/list')
-
   } catch (e) {
-
-    error.value =
-
-      e.response?.data?.message ||
-
-      e.message ||
-
-      '게시글 삭제에 실패했습니다.'
-
-  }
-
-}
-
-async function deleteComment(commentId) {
-  console.log('댓글 삭제 클릭 commentId:', commentId)
-
-  if (!confirm('댓글을 삭제하시겠습니까?')) {
-    return
-  }
-
-  try {
-    const result = await commentApi.delete(commentId)
-
-    console.log('댓글 삭제 성공:', result)
-
-    await fetchDetail()
-  } catch (e) {
-    console.error('댓글 삭제 실패:', e)
+    console.error('게시글 삭제 실패:', e)
     console.error('응답:', e.response?.data)
 
     error.value =
       e.response?.data?.message ||
       e.message ||
-      '댓글 삭제에 실패했습니다.'
+      '게시글 삭제에 실패했습니다.'
   }
 }
 
-function formatDateTime(value) {
-  if (!value) return ''
-
-  return String(value)
-    .replace('T', ' ')
-    .slice(0, 16)
+function startEditComment(comment) {
+  editingCommentId.value = comment.commentId
+  editingCommentContent.value = comment.content
 }
 
+function cancelEditComment() {
+  editingCommentId.value = null
+  editingCommentContent.value = ''
+}
 
 async function updateComment(commentId) {
   if (!editingCommentContent.value.trim()) {
@@ -192,6 +154,45 @@ async function updateComment(commentId) {
       e.message ||
       '댓글 수정에 실패했습니다.'
   }
+}
+
+async function deleteComment(commentId) {
+  if (!confirm('댓글을 삭제하시겠습니까?')) {
+    return
+  }
+
+  try {
+    await commentApi.delete(commentId)
+    await fetchDetail()
+  } catch (e) {
+    console.error('댓글 삭제 실패:', e)
+    console.error('응답:', e.response?.data)
+
+    error.value =
+      e.response?.data?.message ||
+      e.message ||
+      '댓글 삭제에 실패했습니다.'
+  }
+}
+
+function formatDateTime(value) {
+  if (!value) return ''
+
+  return String(value)
+    .replace('T', ' ')
+    .slice(0, 16)
+}
+
+function isBoardOwner() {
+  if (!auth.user || !board.value) return false
+
+  return Number(auth.user.userId) === Number(board.value.userId)
+}
+
+function isCommentOwner(comment) {
+  if (!auth.user || !comment) return false
+
+  return Number(auth.user.userId) === Number(comment.userId)
 }
 
 onMounted(fetchDetail)
@@ -226,20 +227,32 @@ onMounted(fetchDetail)
 
             <div class="meta-item">
               <span class="meta-label">조회수</span>
-              <strong>{{ board.viewCount }}</strong>
+              <strong>{{ board.viewCount ?? 0 }}</strong>
             </div>
 
             <div class="meta-item">
               <span class="meta-label">작성일</span>
               <strong>{{ formatDateTime(board.writedate) }}</strong>
             </div>
+
+            <div class="meta-item like-meta-item">
+              <span class="meta-label">좋아요</span>
+
+              <button
+                type="button"
+                class="like-btn"
+                :class="{ active: board.liked }"
+                @click.stop="toggleLike"
+              >
+                <span>{{ board.liked ? '♥' : '♡' }}</span>
+                <strong>{{ board.likeCount ?? 0 }}</strong>
+              </button>
+            </div>
           </div>
         </header>
 
         <div class="post-content">
-          <p>
-            {{ board.guecontents }}
-          </p>
+          <p>{{ board.guecontents }}</p>
         </div>
 
         <footer class="post-actions">
@@ -247,11 +260,19 @@ onMounted(fetchDetail)
             목록
           </button>
 
-          <button class="btn btn-primary" @click="goUpdate">
+          <button
+            v-if="isBoardOwner()"
+            class="btn btn-primary"
+            @click="goUpdate"
+          >
             수정
           </button>
 
-          <button class="btn btn-danger" @click="deleteBoard">
+          <button
+            v-if="isBoardOwner()"
+            class="btn btn-danger"
+            @click="deleteBoard"
+          >
             삭제
           </button>
         </footer>
@@ -293,18 +314,27 @@ onMounted(fetchDetail)
           >
             <div class="comment-meta">
               <strong>{{ comment.name || comment.writer }}</strong>
+
               <span>
                 {{ formatDateTime(comment.updatedate || comment.writedate) }}
-                <em v-if="comment.updatedate" class="edited-label">(수정됨)</em>
+                <em
+                  v-if="comment.updatedate"
+                  class="edited-label"
+                >
+                  수정됨
+                </em>
               </span>
             </div>
-          
-            <div v-if="editingCommentId === comment.commentId" class="comment-edit-box">
+
+            <div
+              v-if="editingCommentId === comment.commentId"
+              class="comment-edit-box"
+            >
               <textarea
                 v-model="editingCommentContent"
                 class="comment-textarea"
               ></textarea>
-            
+
               <div class="comment-actions">
                 <button
                   type="button"
@@ -313,7 +343,7 @@ onMounted(fetchDetail)
                 >
                   수정 완료
                 </button>
-              
+
                 <button
                   type="button"
                   class="btn btn-light comment-action-btn"
@@ -323,14 +353,14 @@ onMounted(fetchDetail)
                 </button>
               </div>
             </div>
-          
+
             <template v-else>
               <p class="comment-content">
                 {{ comment.content }}
               </p>
-            
+
               <div
-                v-if="auth.user && Number(auth.user.userId) === Number(comment.userId)"
+                v-if="isCommentOwner(comment)"
                 class="comment-actions"
               >
                 <button
@@ -340,7 +370,7 @@ onMounted(fetchDetail)
                 >
                   수정
                 </button>
-              
+
                 <button
                   type="button"
                   class="btn btn-danger comment-action-btn"
