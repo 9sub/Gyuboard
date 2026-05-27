@@ -8,6 +8,9 @@ import BoardListView from '../views/BoardListView.vue'
 import BoardDetailView from '../views/BoardDetailView.vue'
 import BoardWriteView from '../views/BoardWriteView.vue'
 import BoardUpdateView from '../views/BoardUpdateView.vue'
+import MyPageView from '../views/MyPageView.vue'
+import MyLikedBoardsView from '../views/MyLikedBoardsView.vue'
+import MyBookmarkedBoardsView from '../views/MyBookmarkedBoardsView.vue'
 
 const routes = [
   { path: '/', name: 'home', component: HomeView },
@@ -18,8 +21,29 @@ const routes = [
   { path: '/board/list', name: 'board-list', component: BoardListView, meta: { requiresAuth: true } },
   { path: '/board/write', name: 'board-write', component: BoardWriteView, meta: { requiresAuth: true } },
   { path: '/board/detail/:id', name: 'board-detail', component: BoardDetailView, meta: { requiresAuth: true } },
-  { path: '/board/update/:id', name: 'board-update', component: BoardUpdateView, meta: { requiresAuth: true } }
+  { path: '/board/update/:id', name: 'board-update', component: BoardUpdateView, meta: { requiresAuth: true } },
+
+  {
+    path: '/my',
+    name: 'my-page',
+    component: MyPageView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/my/likes',
+    name: 'my-likes',
+    component: MyLikedBoardsView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/my/bookmarks',
+    name: 'my-bookmarks',
+    component: MyBookmarkedBoardsView,
+    meta: { requiresAuth: true }
+  }
 ]
+
+
 
 const router = createRouter({
   history: createWebHistory(),

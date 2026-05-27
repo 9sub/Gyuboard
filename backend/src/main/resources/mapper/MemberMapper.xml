@@ -47,6 +47,86 @@
     	)
     	
     </insert>
+    
+    <select id="selectByUserId" resultType="com.ssafy.edu.model.dto.MemberDto">
+    	SELECT
+    		user_id as userId,
+    		writer,
+    		name,
+    		password,
+    		email,
+    		regidate
+    	FROM gueuser
+    	WHERE user_id = #{userId}
+    </select>
+    
+    <update id="updateProfile" parameterType="com.ssafy.edu.model.dto.MemberDto">
+    	UPDATE gueuser
+    	SET
+    		name = #{name},
+    		email = #{email}
+    	WHERE user_id = #{userId}
+    </update>
+    
+    <select id="selectLikedBoards" resultType="com.ssafy.edu.model.dto.BoardDto">
+ 		SELECT
+ 			t.id,
+        	t.user_id as userId, 
+        	u.writer as writer, 
+        	u.name as name,
+        	t.title, 
+        	t.guecontents, 
+        	t.writedate, 
+        	t.view_count as viewCount,
+        	COUNT(c.comment_id) as commentCount,
+        	(
+        		SELECT COUNT(*)
+        		FROM board_like as bl
+        		WHERE bl.board_id = t.id
+        	)as likeCount
+        	(
+        		SELECT COUNT(*)
+        		FROM board_bookmark as bb
+        		WHERE bb.board_id = t.id
+        	)as bookmarkCount
+    	FROM board_like as bl 
+    	JOIN guestable as t
+    		ON bl.board_id = t.id
+        JOIN gueuser u
+        	ON t.user_id = u.user_id
+        WHERE bl.user_id = #{userId}
+        ORDER BY bl.likedate DESC
+    </select>
+
+	<select id="selectBookmarkedBoards" resultType="com.ssafy.edu.model.dto.BoardDto">
+		SELECT
+ 			t.id,
+        	t.user_id as userId, 
+        	u.writer as writer, 
+        	u.name as name,
+        	t.title, 
+        	t.guecontents, 
+        	t.writedate, 
+        	t.view_count as viewCount,
+        	COUNT(c.comment_id) as commentCount,
+        	(
+        		SELECT COUNT(*)
+        		FROM board_like as bl
+        		WHERE bl.board_id = t.id
+        	)as likeCount
+        	(
+        		SELECT COUNT(*)
+        		FROM board_bookmark as bb
+        		WHERE bb.board_id = t.id
+        	)as bookmarkCount
+    	FROM board_bookmark as bb 
+    	JOIN guestable as t
+    		ON bb.board_id = t.id
+        JOIN gueuser u
+        	ON t.user_id = u.user_id
+        WHERE bb.user_id = #{userId}
+        ORDER BY bl.likedate DESC
+	</select>
 
 </mapper>
 

@@ -908,3 +908,82 @@ textarea.form-control {
     display: none;
   }
 }
+
+.success-message {
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  color: #047857;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 14px;
+  font-weight: 800;
+}
+
+.my-page-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 22px;
+  align-items: start;
+}
+
+.my-profile-card,
+.my-menu-card {
+  padding: 30px;
+}
+
+.my-menu-card {
+  display: grid;
+  gap: 12px;
+}
+
+.my-menu-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 56px;
+  padding: 0 18px;
+  border: 1px solid #fecaca;
+  border-radius: 16px;
+  background: #fff;
+  color: #ef4444;
+  font-weight: 900;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+.my-menu-button span {
+  font-size: 22px;
+}
+
+.my-menu-button:hover {
+  background: #fff1f2;
+  border-color: #fca5a5;
+  transform: translateY(-1px);
+}
+
+.my-menu-button.bookmark {
+  border-color: #fde68a;
+  color: #f59e0b;
+}
+
+.my-menu-button.bookmark:hover {
+  background: #fffbeb;
+  border-color: #fbbf24;
+}
+
+@media (max-width: 768px) {
+  .my-page-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.nav-user-link {
+  cursor: pointer;
+}
+
+.nav-user-link:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}

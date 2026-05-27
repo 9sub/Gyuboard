@@ -20,7 +20,9 @@ async function logout() {
         <template v-if="auth.isLogin">
           <RouterLink to="/board/list" class="nav-link">게시글 목록</RouterLink>
           <RouterLink to="/board/write" class="nav-button">글쓰기</RouterLink>
-          <span class="nav-user">{{ auth.displayName }}님</span>
+          <RouterLink to="/my" class="nav-user nav-user-link">
+            {{ auth.displayName }}님
+          </RouterLink>
           <button type="button" class="nav-link button-link" @click="logout">로그아웃</button>
         </template>
         <template v-else>
