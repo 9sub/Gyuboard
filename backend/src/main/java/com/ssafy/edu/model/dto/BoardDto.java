@@ -20,5 +20,5 @@ public class BoardDto {
 	
 	private int likeCount;
 	private boolean liked;
-	private int bookmarkCount;
+//	private int bookmarkCount;
 }

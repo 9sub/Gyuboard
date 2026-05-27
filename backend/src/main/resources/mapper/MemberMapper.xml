@@ -108,7 +108,11 @@
         	t.guecontents, 
         	t.writedate, 
         	t.view_count as viewCount,
-        	COUNT(c.comment_id) as commentCount,
+        	(
+        		SELECT COUNT(*)
+        		FROM comment
+        		WHERE c.board_id = t.id
+        	)as commentCount,
         	(
         		SELECT COUNT(*)
         		FROM board_like as bl
