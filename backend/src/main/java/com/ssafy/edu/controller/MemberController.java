@@ -32,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/api")
 public class MemberController {
 	
@@ -119,7 +120,7 @@ public class MemberController {
 				@RequestAttribute("loginUser") MemberDto loginUser
 			){
 		MemberDto updateMember = memberservice.updateProfile(loginUser.getUserId(), request);
-
+		
 		updateMember.setPassword(null);
 		return ResponseEntity.ok(updateMember);
 	}
@@ -137,6 +138,7 @@ public class MemberController {
 				@RequestAttribute("loginUser") MemberDto loginUser
 			){
 		List<BoardDto> list = memberservice.bookmarkedBoards(loginUser.getUserId());
+		
 		return ResponseEntity.ok(list);
 	}
 	

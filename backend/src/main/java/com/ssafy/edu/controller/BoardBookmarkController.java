@@ -25,6 +25,7 @@ import com.ssafy.edu.model.dto.BoardListResponse;
 import com.ssafy.edu.model.dto.CommentDto;
 import com.ssafy.edu.model.dto.MemberDto;
 import com.ssafy.edu.model.dto.PageDto;
+import com.ssafy.edu.model.service.BoardBookmarkService;
 import com.ssafy.edu.model.service.BoardLikeService;
 import com.ssafy.edu.model.service.BoardService;
 import com.ssafy.edu.model.service.CommentService;
@@ -37,19 +38,22 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/boards")
-public class BoardLikeController {
+public class BoardBookmarkController {
 	
-	private final BoardLikeService boardlikeservice;
+	private final BoardBookmarkService boardbookmarkservice;
 	
-	@PostMapping("/{boardId}/like")
-	public ResponseEntity<BoardLikeResponse> toggleLike(
+	@PostMapping("/{boardId}/bookmark")
+	public ResponseEntity<BoardBookmarkResponse> toggleLike(
 				@PathVariable int boardId,
 				@RequestAttribute("loginUser") MemberDto loginUser
 			){
-		boolean liked = boardlikeservice.toggle(boardId, loginUser);
-		int likeCount = boardlikeservice.count(boardId);
 		
-		return ResponseEntity.ok(new BoardLikeResponse(liked, likeCount));
+		boolean bookmarked = boardbookmarkservice.toggle(boardId, loginUser);
+		int bookmarkedCount = boardbookmarkservice.count(boardId);
+		
+		log.info("book mark ={} count = {}", bookmarked, bookmarkedCount);
+		
+		return ResponseEntity.ok(new BoardBookmarkResponse(bookmarked, bookmarkedCount));
 	}
 	
 

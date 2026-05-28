@@ -91,6 +91,25 @@ async function toggleLike() {
   }
 }
 
+async function toggleBookmark() {
+  try {
+    const response = await boardApi.bookmark(boardId)
+
+    console.log('북마크 응답:', response)
+
+    board.value.bookmarked = response.bookmarked
+    board.value.bookmarkCount = response.bookmarkCount
+  } catch (e) {
+    console.error('북마크 처리 실패:', e)
+    console.error('응답:', e.response?.data)
+
+    error.value =
+      e.response?.data?.message ||
+      e.message ||
+      '북마크 처리에 실패했습니다.'
+  }
+}
+
 function goList() {
   router.push('/board/list')
 }
@@ -215,9 +234,39 @@ onMounted(fetchDetail)
 
       <article v-if="board" class="post-card">
         <header class="post-header">
-          <h2 class="post-title">
-            {{ board.title }}
-          </h2>
+          <div class="post-title-row">
+            <h2 class="post-title">
+              {{ board.title }}
+            </h2>
+
+            <div class="post-icon-actions">
+              <button
+                type="button"
+                class="icon-action like-icon-btn"
+                :class="{ active: board.liked }"
+                @click.stop="toggleLike"
+                title="좋아요"
+              >
+                <span class="icon-symbol">
+                  {{ board.liked ? '♥' : '♡' }}
+                </span>
+                <strong>{{ board.likeCount ?? 0 }}</strong>
+              </button>
+
+              <button
+                type="button"
+                class="icon-action bookmark-icon-btn"
+                :class="{ active: board.bookmarked }"
+                @click.stop="toggleBookmark"
+                title="북마크"
+              >
+                <span class="icon-symbol">
+                  {{ board.bookmarked ? '★' : '☆' }}
+                </span>
+                <strong>{{ board.bookmarkCount ?? 0 }}</strong>
+              </button>
+            </div>
+          </div>
 
           <div class="post-meta">
             <div class="meta-item">
@@ -233,20 +282,6 @@ onMounted(fetchDetail)
             <div class="meta-item">
               <span class="meta-label">작성일</span>
               <strong>{{ formatDateTime(board.writedate) }}</strong>
-            </div>
-
-            <div class="meta-item like-meta-item">
-              <span class="meta-label">좋아요</span>
-
-              <button
-                type="button"
-                class="like-btn"
-                :class="{ active: board.liked }"
-                @click.stop="toggleLike"
-              >
-                <span>{{ board.liked ? '♥' : '♡' }}</span>
-                <strong>{{ board.likeCount ?? 0 }}</strong>
-              </button>
             </div>
           </div>
         </header>

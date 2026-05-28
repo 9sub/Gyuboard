@@ -78,12 +78,16 @@
         	t.guecontents, 
         	t.writedate, 
         	t.view_count as viewCount,
-        	COUNT(c.comment_id) as commentCount,
+        	(
+        		SELECT COUNT(*)
+        		FROM comment as c
+        		WHERE c.board_id = t.id
+        	)as commentCount,
         	(
         		SELECT COUNT(*)
         		FROM board_like as bl
         		WHERE bl.board_id = t.id
-        	)as likeCount
+        	)as likeCount,
         	(
         		SELECT COUNT(*)
         		FROM board_bookmark as bb
@@ -110,14 +114,14 @@
         	t.view_count as viewCount,
         	(
         		SELECT COUNT(*)
-        		FROM comment
+        		FROM comment as c
         		WHERE c.board_id = t.id
         	)as commentCount,
         	(
         		SELECT COUNT(*)
         		FROM board_like as bl
         		WHERE bl.board_id = t.id
-        	)as likeCount
+        	)as likeCount,
         	(
         		SELECT COUNT(*)
         		FROM board_bookmark as bb
@@ -129,7 +133,7 @@
         JOIN gueuser u
         	ON t.user_id = u.user_id
         WHERE bb.user_id = #{userId}
-        ORDER BY bl.likedate DESC
+        ORDER BY bb.bookmark_date DESC
 	</select>
 
 </mapper>
