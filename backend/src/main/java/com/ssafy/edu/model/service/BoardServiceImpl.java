@@ -25,7 +25,7 @@ public class BoardServiceImpl implements BoardService{
 	@Override
 	public int write(BoardDto boardDto) {
 		// TODO Auto-generated method stub
-		log.info(boardDto.getUserId()+"****");
+		log.info("write function in boardserviceimpl  2");
 		return boardMapper.insert(boardDto);
 	}
 

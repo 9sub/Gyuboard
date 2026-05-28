@@ -22,4 +22,6 @@ public class BoardDto {
 	private boolean liked;
 	private int bookmarkCount;
 	private boolean bookmarked;
+	
+	private String imageUrl;
 }

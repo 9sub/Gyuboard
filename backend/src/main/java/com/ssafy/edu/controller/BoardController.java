@@ -1,6 +1,17 @@
 package com.ssafy.edu.controller;
 
+
+import java.io.IOException;
 import java.util.List;
+import java.nio.file.Files;
+
+import java.nio.file.Path;
+
+import java.nio.file.Paths;
+
+import java.nio.file.StandardCopyOption;
+
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +24,9 @@ import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.edu.exception.ApiException;
 import com.ssafy.edu.model.dto.BoardDetailResponse;
@@ -73,12 +85,46 @@ public class BoardController {
 	
 	@PostMapping
 	public ResponseEntity<Void> wrtie(
-				@RequestBody BoardDto boarddto,
+				@RequestPart("board") BoardDto boarddto,
+				@RequestPart(value = "image", required = false) MultipartFile image,
 				@RequestAttribute("loginUser") MemberDto loginUser
-			){
+			)throws IOException{
 		boarddto.setUserId(loginUser.getUserId());
 		
+		if(image != null && !image.isEmpty()) {
+			String contentType = image.getContentType();
+			
+			if(contentType == null || !contentType.startsWith("image/")) {
+				throw new ApiException(HttpStatus.BAD_REQUEST, "INVALID_FILE_TYPE", "이미지 파일만 업로드할 수 있습니다.");
+			}
+			
+			Path uploadPath = Paths.get("uploads","board")
+					.toAbsolutePath()
+					.normalize();
+			
+			Files.createDirectories(uploadPath);
+			
+			String originalFilename = image.getOriginalFilename();
+			String extenstion = "";
+			
+			if(originalFilename != null && originalFilename.contains(".")) {
+				extenstion = originalFilename.substring(originalFilename.lastIndexOf("."));
+			}
+			String savedFilename = UUID.randomUUID().toString() + extenstion;
+			
+			Path targetPath = uploadPath.resolve(savedFilename).normalize();
+			
+			Files.copy(
+						image.getInputStream(),
+						targetPath,
+						StandardCopyOption.REPLACE_EXISTING
+					);
+			boarddto.setImageUrl("/uploads/board/"+savedFilename);
+		}
+		
 		boardservice.write(boarddto);
+		
+		log.info("board dto = {}", boarddto);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}

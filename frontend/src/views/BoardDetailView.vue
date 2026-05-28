@@ -32,6 +32,9 @@ async function fetchDetail() {
       response.data ||
       null
 
+    console.log('상세 board:', board.value)
+    console.log('이미지 주소:', board.value?.imageUrl)
+
     comments.value = response.comments || []
 
     if (!board.value) {
@@ -287,6 +290,10 @@ onMounted(fetchDetail)
         </header>
 
         <div class="post-content">
+          <div v-if="board.imageUrl" class="post-image-box">
+            <img :src="board.imageUrl" alt="게시글 이미지" />
+          </div>
+        
           <p>{{ board.guecontents }}</p>
         </div>
 

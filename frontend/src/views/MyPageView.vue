@@ -2,6 +2,7 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { memberApi } from '../api/member'
+import { useAuthStore } from '../stores/authStore'
 import ErrorMessage from '../components/ErrorMessage.vue'
 
 const router = useRouter()
@@ -9,6 +10,8 @@ const router = useRouter()
 const error = ref('')
 const success = ref('')
 const loading = ref(true)
+
+const auth = useAuthStore()
 
 const form = reactive({
   writer: '',
@@ -57,9 +60,12 @@ async function submit() {
     form.name = updated.name || ''
     form.email = updated.email || ''
 
+    auth.user = updated
+
     success.value = '내정보가 수정되었습니다.'
   } catch (e) {
     console.error('내정보 수정 실패:', e)
+
     error.value =
       e.response?.data?.message ||
       e.message ||

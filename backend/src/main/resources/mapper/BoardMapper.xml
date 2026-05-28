@@ -90,12 +90,14 @@
     	INSERT INTO guestable(
     		user_id,
     		title,
-    		guecontents
+    		guecontents,
+    		image_url
     	)
     	VALUES(
     		#{userId},
     		#{title},
-    		#{guecontents}
+    		#{guecontents},
+    		#{imageUrl}
     	)
     </insert>
     
@@ -118,7 +120,8 @@
     			SELECT COUNT(*)
     			FROM board_bookmark as bb
     			WHERE bb.board_id = t.id
-    		)as bookmarkCount
+    		)as bookmarkCount,
+    		t.image_url as imageUrl
 
     	FROM guestable as t
     	JOIN gueuser as u
