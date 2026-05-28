@@ -133,7 +133,8 @@
     	UPDATE guestable
     	SET
     		title = #{title},
-    		guecontents = #{guecontents}
+    		guecontents = #{guecontents},
+    		image_url = #{imageUrl}
     	WHERE id = #{id}
     </update>
     

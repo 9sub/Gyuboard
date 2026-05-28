@@ -39,6 +39,7 @@ import com.ssafy.edu.model.service.BoardBookmarkService;
 import com.ssafy.edu.model.service.BoardLikeService;
 import com.ssafy.edu.model.service.BoardService;
 import com.ssafy.edu.model.service.CommentService;
+import com.ssafy.edu.model.service.ImageUploadService;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +55,7 @@ public class BoardController {
 	private final CommentService commentservice;
 	private final BoardLikeService boardlikeservice;
 	private final BoardBookmarkService boardbookmarkservice;
+	private final ImageUploadService imageuploadservice;
 
 	@GetMapping
 	public ResponseEntity<BoardListResponse> list(
@@ -91,40 +93,14 @@ public class BoardController {
 			)throws IOException{
 		boarddto.setUserId(loginUser.getUserId());
 		
-		if(image != null && !image.isEmpty()) {
-			String contentType = image.getContentType();
-			
-			if(contentType == null || !contentType.startsWith("image/")) {
-				throw new ApiException(HttpStatus.BAD_REQUEST, "INVALID_FILE_TYPE", "이미지 파일만 업로드할 수 있습니다.");
-			}
-			
-			Path uploadPath = Paths.get("uploads","board")
-					.toAbsolutePath()
-					.normalize();
-			
-			Files.createDirectories(uploadPath);
-			
-			String originalFilename = image.getOriginalFilename();
-			String extenstion = "";
-			
-			if(originalFilename != null && originalFilename.contains(".")) {
-				extenstion = originalFilename.substring(originalFilename.lastIndexOf("."));
-			}
-			String savedFilename = UUID.randomUUID().toString() + extenstion;
-			
-			Path targetPath = uploadPath.resolve(savedFilename).normalize();
-			
-			Files.copy(
-						image.getInputStream(),
-						targetPath,
-						StandardCopyOption.REPLACE_EXISTING
-					);
-			boarddto.setImageUrl("/uploads/board/"+savedFilename);
+		String imageUrl = imageuploadservice.uploadBoardImage(image);
+		
+		if(imageUrl != null) {
+			boarddto.setImageUrl(imageUrl);
 		}
 		
 		boardservice.write(boarddto);
 		
-		log.info("board dto = {}", boarddto);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}

@@ -981,3 +981,18 @@ textarea.form-control {
   max-height: 520px;
   object-fit: contain;
 }
+
+.image-preview-box {
+  margin: 16px 0 22px;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #f8fafc;
+}
+
+.image-preview-box img {
+  display: block;
+  width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+}
