@@ -50,8 +50,8 @@ public class BoardBookmarkController {
 		
 		boolean bookmarked = boardbookmarkservice.toggle(boardId, loginUser);
 		int bookmarkedCount = boardbookmarkservice.count(boardId);
-		
-		log.info("book mark ={} count = {}", bookmarked, bookmarkedCount);
+
+		log.info("bookmarked = {}, bookmarkedCount = {}", bookmarked, bookmarkedCount);
 		
 		return ResponseEntity.ok(new BoardBookmarkResponse(bookmarked, bookmarkedCount));
 	}

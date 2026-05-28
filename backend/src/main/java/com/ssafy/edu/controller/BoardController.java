@@ -23,6 +23,7 @@ import com.ssafy.edu.model.dto.BoardListResponse;
 import com.ssafy.edu.model.dto.CommentDto;
 import com.ssafy.edu.model.dto.MemberDto;
 import com.ssafy.edu.model.dto.PageDto;
+import com.ssafy.edu.model.service.BoardBookmarkService;
 import com.ssafy.edu.model.service.BoardLikeService;
 import com.ssafy.edu.model.service.BoardService;
 import com.ssafy.edu.model.service.CommentService;
@@ -40,6 +41,7 @@ public class BoardController {
 	private final BoardService boardservice;
 	private final CommentService commentservice;
 	private final BoardLikeService boardlikeservice;
+	private final BoardBookmarkService boardbookmarkservice;
 
 	@GetMapping
 	public ResponseEntity<BoardListResponse> list(
@@ -100,10 +102,18 @@ public class BoardController {
 		boarddto.setLikeCount(boardlikeservice.count(id));
 		
 		boarddto.setLiked(boardlikeservice.isLiked(id, loginUser.getUserId()));
+		
+		boarddto.setBookmarked(
+				boardbookmarkservice.isBookmarked(id, loginUser.getUserId())
+				);
+		
+		boarddto.setBookmarkCount(boardbookmarkservice.count(id));
+		
 		log.info("board {}",boarddto);
+		
 		List<CommentDto> comments = commentservice.list(id);
 		
-		
+	
 		
 		BoardDetailResponse response = new BoardDetailResponse(boarddto, comments);
 		
@@ -127,8 +137,7 @@ public class BoardController {
 		
 		boarddto.setId(id);
 		boarddto.setUserId(board.getUserId());
-		
-		log.info("hello");
+
 		
 		boardservice.update(boarddto);
 		

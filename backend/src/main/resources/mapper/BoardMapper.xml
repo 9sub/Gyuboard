@@ -113,7 +113,13 @@
     			SELECT COUNT(*)
     			FROM board_like as bl
     			WHERE bl.board_id = t.id
-    		)as likeCount
+    		)as likeCount,
+    		(
+    			SELECT COUNT(*)
+    			FROM board_bookmark as bb
+    			WHERE bb.board_id = t.id
+    		)as bookmarkCount
+
     	FROM guestable as t
     	JOIN gueuser as u
     	ON t.user_id = u.user_id
