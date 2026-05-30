@@ -142,12 +142,17 @@ public class BoardController {
 		return ResponseEntity.ok(response);
 	}
 	
+	
+
+	
+	
 	@PutMapping("/{id}")
 	public ResponseEntity<Void> update(
 				@PathVariable int id,
-				@RequestBody BoardDto boarddto,
+				@RequestPart("board") BoardDto boarddto,
+				@RequestPart(value = "image", required=false) MultipartFile image,
 				@RequestAttribute("loginUser") MemberDto loginUser
-			){
+			) throws IOException{
 		
 		BoardDto board = boardservice.detail(id);
 		if(board == null) {
@@ -160,6 +165,12 @@ public class BoardController {
 		boarddto.setId(id);
 		boarddto.setUserId(board.getUserId());
 
+		String imageUrl = imageuploadservice.uploadBoardImage(image);
+		
+		if(imageUrl != null) {
+			boarddto.setImageUrl(imageUrl);
+		}
+		
 		
 		boardservice.update(boarddto);
 		
